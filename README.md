@@ -139,7 +139,7 @@ Este proyecto sigue estrictamente la especificación **[Conventional Commits](ht
 ## 🔧 Integración CI/CD
 Para producción, OpsGuard se ejecuta automáticamente en GitHub Actions.
 1. Workflow: `.github/workflows/opsguard.yml`.
-2. Secretos requeridos: `OPENROUTER_API_KEY`.
+2. Secretos requeridos: `OPENROUTER_API_KEY`. (Facilitados al profesorado en el PDF)
 
 ### 🧪 Evidencias de Ejecución
 Puede consultar logs reales y capturas de funcionamiento en la carpeta de evidencias:
