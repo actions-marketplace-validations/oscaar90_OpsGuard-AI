@@ -28,7 +28,7 @@ def scan(
     # --- LAZY IMPORTS ---
     import pathspec
     from src.ai import AIEngine
-    from src.ingest import GitManager
+    from src.ingest import GitManager, SkipScanSignal
     from src.security import SecurityPolicy
     from src.console_ui import OpsGuardUI
 
@@ -70,22 +70,18 @@ def scan(
 
         diff = manager.get_diff(files=target_files)
 
-    # --- FIX 1: Graceful Exit Signal ---
     except typer.Exit:
-        # Re-lanzamos la señal de salida limpia para que Typer termine con código 0.
-        raise 
+        raise
+
+    except SkipScanSignal as e:
+        print(f"⏭️  {e}")
+        raise typer.Exit(code=0)
 
     except AttributeError:
         typer.secho("❌ API Mismatch: Asegúrate de que GitManager tenga 'get_staged_files()'.", fg=typer.colors.RED)
         sys.exit(1)
 
-    # --- FIX 2: Catch Generic Exceptions & SKIP_SCAN Signal ---
     except Exception as e:
-        # Si ingest.py lanza SKIP_SCAN (ej. borrado de rama), salimos en verde.
-        if "SKIP_SCAN" in str(e):
-            print(f"⏭️  {e}")
-            raise typer.Exit(code=0)
-            
         typer.secho(f"❌ Init Error: {e}", fg=typer.colors.RED)
         sys.exit(1)
 
