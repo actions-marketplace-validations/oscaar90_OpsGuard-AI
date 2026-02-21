@@ -12,6 +12,10 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ### Added
 
+- **[PR #44]** Pipeline CI/CD reestructurado en 3 jobs independientes con caché de Poetry y matrix de Python — el workflow de un único job se divide en: `lint` (black --check), `test` (matrix Python 3.11 + 3.12), `security-scan` (opsguard scan, depende de que lint y test pasen). Se añade `actions/cache@v4` para el virtualenv de Poetry, reduciendo el tiempo de instalación en runs sucesivos. Se aplica `black` sobre todo el código fuente por primera vez (10 ficheros reformateados), garantizando que el job de lint no falle en el primer run.
+  - Ficheros: `.github/workflows/opsguard.yml`, `src/`, `tests/`
+  - Rama: `feat/cicd-pipeline-improvements` → `main`
+
 - **[PR #43]** Sequence diagram de actores en runtime añadido al README — complementa el flowchart de alto nivel con un diagrama de secuencia Mermaid que muestra los actores reales (GitHub Actions, Gate 1, Gate 2, OpenRouter API) y los flujos condicionales de BLOCK/APPROVE con sus notas de contexto (ADR-0001).
   - Fichero: `README.md`
   - Rama: `feat/architecture-improvements` → `main`

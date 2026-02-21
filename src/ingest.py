@@ -9,6 +9,7 @@ from git.exc import GitCommandError, InvalidGitRepositoryError
 
 class GitIngestError(Exception):
     """Custom exception for git ingestion errors."""
+
     pass
 
 
@@ -18,6 +19,7 @@ class SkipScanSignal(GitIngestError):
     Examples: direct push to main, branch deletion. These are valid
     git events but OpsGuard only operates on Pull Requests.
     """
+
     pass
 
 
@@ -67,15 +69,19 @@ class GitManager:
             # No PR object — check if this is an event we should skip
             # (merges to main, branch deletions, direct pushes)
             if "pusher" in event_data or "deleted" in event_data:
-                raise SkipScanSignal("Event is not a Pull Request (Push/Delete detected).")
-            
+                raise SkipScanSignal(
+                    "Event is not a Pull Request (Push/Delete detected)."
+                )
+
             raise GitIngestError("No pull_request data found in GitHub event")
 
         base_sha = pull_request.get("base", {}).get("sha")
         head_sha = pull_request.get("head", {}).get("sha")
 
         if not base_sha or not head_sha:
-            raise GitIngestError("Missing base.sha or head.sha in pull_request event data")
+            raise GitIngestError(
+                "Missing base.sha or head.sha in pull_request event data"
+            )
 
         self._shas_cache = (base_sha, head_sha)
         return self._shas_cache
@@ -94,9 +100,9 @@ class GitManager:
             else:
                 # Equivalent to: git diff --name-only HEAD
                 diff_text = self.repo.git.diff("HEAD", name_only=True)
-            
+
             return diff_text.splitlines() if diff_text else []
-            
+
         except GitCommandError as e:
             raise GitIngestError(f"Failed to list staged files: {e}")
 
@@ -104,7 +110,7 @@ class GitManager:
         """Get the git diff based on environment and strict file filtering.
 
         Args:
-            files: Optional list of files to limit the diff to. 
+            files: Optional list of files to limit the diff to.
                    If provided, only changes in these files are returned.
 
         Returns:

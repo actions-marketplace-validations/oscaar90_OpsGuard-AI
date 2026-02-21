@@ -79,9 +79,9 @@ class TestGate1SecretDetection:
         violations = self.policy.scan_diff(make_diff(content))
 
         assert len(violations) > 0, "Expected AWS key violation, got none"
-        assert any("AWS" in v for v in violations), (
-            f"Violation must reference AWS rule. Got: {violations}"
-        )
+        assert any(
+            "AWS" in v for v in violations
+        ), f"Violation must reference AWS rule. Got: {violations}"
 
     def test_aws_violation_message_contains_pattern_name(self):
         """Each violation message must include the rule name for audit traceability."""
@@ -144,9 +144,9 @@ class TestGate1DoesNotOverreach:
         content = (FIXTURES / "config.php").read_text()
         violations = self.policy.scan_diff(make_diff(content))
 
-        assert violations == [], (
-            f"PHP generic password should reach Gate 2 (AI). Got: {violations}"
-        )
+        assert (
+            violations == []
+        ), f"PHP generic password should reach Gate 2 (AI). Got: {violations}"
 
     def test_supply_chain_typosquatting_passes_gate1(self):
         """supply_chain_attack.py — typosquatting domain (ghrc.io vs ghcr.io).
@@ -159,9 +159,9 @@ class TestGate1DoesNotOverreach:
         content = (FIXTURES / "supply_chain_attack.py").read_text()
         violations = self.policy.scan_diff(make_diff(content))
 
-        assert violations == [], (
-            f"Supply-chain typosquatting should reach Gate 2 (AI). Got: {violations}"
-        )
+        assert (
+            violations == []
+        ), f"Supply-chain typosquatting should reach Gate 2 (AI). Got: {violations}"
 
 
 # ---------------------------------------------------------------------------
@@ -185,9 +185,9 @@ class TestDiffBehavior:
             "-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n"
         )
         violations = self.policy.scan_diff(diff)
-        assert violations == [], (
-            f"Removed secrets must not be flagged. Got: {violations}"
-        )
+        assert (
+            violations == []
+        ), f"Removed secrets must not be flagged. Got: {violations}"
 
     def test_diff_header_lines_are_ignored(self):
         """Lines starting with '+++' are diff metadata, not code."""
@@ -209,6 +209,6 @@ class TestDiffBehavior:
             "+GITHUB_TOKEN=ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ123456789A\n"
         )
         violations = self.policy.scan_diff(diff)
-        assert len(violations) >= 2, (
-            f"Expected at least 2 violations, got {len(violations)}: {violations}"
-        )
+        assert (
+            len(violations) >= 2
+        ), f"Expected at least 2 violations, got {len(violations)}: {violations}"

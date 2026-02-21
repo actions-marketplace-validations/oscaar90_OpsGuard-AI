@@ -31,6 +31,7 @@ from src.ingest import GitManager, GitIngestError, SkipScanSignal
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def write_event(tmp_path: Path, payload: dict) -> str:
     """Write a GitHub Actions event JSON file and return its path."""
     event_file = tmp_path / "event.json"
@@ -41,6 +42,7 @@ def write_event(tmp_path: Path, payload: dict) -> str:
 # ---------------------------------------------------------------------------
 # GitManager initialisation
 # ---------------------------------------------------------------------------
+
 
 class TestGitManagerInit:
     """GitManager must accept a valid repository and fail clearly on bad input."""
@@ -59,6 +61,7 @@ class TestGitManagerInit:
 # ---------------------------------------------------------------------------
 # CI environment detection
 # ---------------------------------------------------------------------------
+
 
 class TestCIDetection:
     """is_ci() must reflect the presence of the GITHUB_ACTIONS environment variable."""
@@ -79,6 +82,7 @@ class TestCIDetection:
 # ---------------------------------------------------------------------------
 # GitHub event JSON parsing — _get_ci_shas()
 # ---------------------------------------------------------------------------
+
 
 class TestCISHAParsing:
     """_get_ci_shas() must parse GitHub event payloads correctly and fail clearly."""
@@ -122,7 +126,9 @@ class TestCISHAParsing:
         with pytest.raises(SkipScanSignal):
             manager._get_ci_shas()
 
-    def test_raises_skip_signal_on_branch_delete_event(self, manager, monkeypatch, tmp_path):
+    def test_raises_skip_signal_on_branch_delete_event(
+        self, manager, monkeypatch, tmp_path
+    ):
         """A branch deletion event (has 'deleted' key) must raise SkipScanSignal."""
         payload = {"deleted": True, "ref": "refs/heads/old-feature"}
         monkeypatch.setenv("GITHUB_EVENT_PATH", write_event(tmp_path, payload))
@@ -137,7 +143,9 @@ class TestCISHAParsing:
 
     # --- GitIngestError: events with unexpected structure ---
 
-    def test_raises_when_no_pull_request_and_no_skip_trigger(self, manager, monkeypatch, tmp_path):
+    def test_raises_when_no_pull_request_and_no_skip_trigger(
+        self, manager, monkeypatch, tmp_path
+    ):
         """An unknown event without 'pull_request', 'pusher', or 'deleted' is
         an unrecognised payload — raise GitIngestError (not SkipScanSignal).
         """
@@ -146,7 +154,9 @@ class TestCISHAParsing:
         with pytest.raises(GitIngestError, match="No pull_request data"):
             manager._get_ci_shas()
 
-    def test_raises_when_pull_request_missing_base_sha(self, manager, monkeypatch, tmp_path):
+    def test_raises_when_pull_request_missing_base_sha(
+        self, manager, monkeypatch, tmp_path
+    ):
         """PR event without base.sha / head.sha is malformed — raise GitIngestError."""
         payload = {"pull_request": {"title": "Incomplete PR payload"}}
         monkeypatch.setenv("GITHUB_EVENT_PATH", write_event(tmp_path, payload))
@@ -155,7 +165,9 @@ class TestCISHAParsing:
 
     # --- Happy path ---
 
-    def test_returns_correct_shas_from_valid_pr_event(self, manager, monkeypatch, tmp_path):
+    def test_returns_correct_shas_from_valid_pr_event(
+        self, manager, monkeypatch, tmp_path
+    ):
         """A well-formed PR event must return (base_sha, head_sha) as strings."""
         payload = {
             "pull_request": {

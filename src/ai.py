@@ -15,7 +15,9 @@ _console = Console()
 
 class AIEngineError(Exception):
     """Custom exception for AI Engine failures."""
+
     pass
+
 
 # --- FINOPS CONFIGURATION (Unit Economic) ---
 # Pricing for google/gemini-2.0-flash-001 (OpenRouter/Google pricing)
@@ -64,6 +66,7 @@ OUTPUT FORMAT (Strict JSON):
 }
 """
 
+
 class AIEngine:
     def __init__(self):
         raw_key = os.getenv("OPENROUTER_API_KEY")
@@ -71,24 +74,26 @@ class AIEngine:
             raise AIEngineError("❌ Missing OPENROUTER_API_KEY")
 
         self.api_key = raw_key.strip().strip('"').strip("'")
-        
+
         extra_headers = {
             "HTTP-Referer": "https://opsguard.local",
-            "X-Title": "OpsGuard-TFM"
+            "X-Title": "OpsGuard-TFM",
         }
 
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=self.api_key,
             default_headers=extra_headers,
-            timeout=60.0
+            timeout=60.0,
         )
-        
+
         self.model = os.getenv("OPSGUARD_MODEL", "google/gemini-2.0-flash-001")
 
     def analyze_diff(self, diff_text: str) -> Dict[str, Any]:
         if TELEMETRY_MODE != "silent":
-            _console.print(f"🤖 OpsGuard Brain: Sending diff to [cyan]{self.model}[/cyan]...")
+            _console.print(
+                f"🤖 OpsGuard Brain: Sending diff to [cyan]{self.model}[/cyan]..."
+            )
         if TELEMETRY_MODE == "verbose":
             _console.print(f"📦 Context Payload: {len(diff_text)} chars")
 
@@ -102,7 +107,7 @@ class AIEngine:
             _console.print(
                 f"⚠️  Diff truncated: {original_len} → {MAX_DIFF_CHARS} chars "
                 f"({chars_lost} discarded)",
-                style="yellow"
+                style="yellow",
             )
 
         try:
@@ -110,11 +115,14 @@ class AIEngine:
                 model=self.model,
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": f"Analyze this git diff:\n\n{truncated_diff}"}
+                    {
+                        "role": "user",
+                        "content": f"Analyze this git diff:\n\n{truncated_diff}",
+                    },
                 ],
                 temperature=0.1,  # Deterministic: reduces hallucinations
                 max_tokens=1024,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
             )
 
             end_time = time.time()
@@ -123,7 +131,7 @@ class AIEngine:
             if TELEMETRY_MODE == "verbose":
                 _console.print(
                     f"⏱️  AI Analysis Time: {total_latency_ms / 1000:.2f}s",
-                    style="cyan"
+                    style="cyan",
                 )
 
             # --- FINOPS TELEMETRY (ADR-0003) ---
@@ -139,13 +147,17 @@ class AIEngine:
                     title="💰 FinOps Telemetry",
                     box=box.MARKDOWN,
                     style="green",
-                    title_style="bold green"
+                    title_style="bold green",
                 )
                 table.add_column("Metric", style="bold")
                 table.add_column("Value")
                 table.add_column("Unit Cost")
-                table.add_row("Input Tokens", str(input_tok), f"${PRICE_PER_1M_INPUT}/1M")
-                table.add_row("Output Tokens", str(output_tok), f"${PRICE_PER_1M_OUTPUT}/1M")
+                table.add_row(
+                    "Input Tokens", str(input_tok), f"${PRICE_PER_1M_INPUT}/1M"
+                )
+                table.add_row(
+                    "Output Tokens", str(output_tok), f"${PRICE_PER_1M_OUTPUT}/1M"
+                )
                 table.add_row("Total Latency", f"{total_latency_ms}ms", "N/A")
                 # TTFT requires streaming mode; non-streaming total latency ≈ TTFT.
                 table.add_row("TTFT (approx)", f"{total_latency_ms}ms", "non-streaming")
@@ -159,12 +171,14 @@ class AIEngine:
             try:
                 parsed_data = json.loads(clean_content)
             except json.JSONDecodeError:
-                _console.print(f"⚠️ RAW AI RESPONSE (JSON Error): {clean_content}", style="yellow")
+                _console.print(
+                    f"⚠️ RAW AI RESPONSE (JSON Error): {clean_content}", style="yellow"
+                )
                 return {
                     "verdict": "BLOCK",
                     "risk_score": 10,
                     "explanation": "AI output parsing failed. Manual review required.",
-                    "findings": []
+                    "findings": [],
                 }
 
             # Normalisation: handle unexpected list responses
@@ -174,8 +188,10 @@ class AIEngine:
             return {
                 "verdict": parsed_data.get("verdict", "BLOCK"),
                 "risk_score": parsed_data.get("risk_score", 0),
-                "explanation": parsed_data.get("explanation", "No explanation provided."),
-                "findings": parsed_data.get("findings", [])
+                "explanation": parsed_data.get(
+                    "explanation", "No explanation provided."
+                ),
+                "findings": parsed_data.get("findings", []),
             }
 
         except Exception as e:
@@ -185,5 +201,5 @@ class AIEngine:
                 "verdict": "BLOCK",
                 "risk_score": 10,
                 "explanation": f"Internal Engine Error: {str(e)}",
-                "findings": []
+                "findings": [],
             }
