@@ -10,7 +10,17 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 > Ciclo de mejora continua iniciado tras un análisis técnico exhaustivo del proyecto (`FEEDBACK.md`). Las correcciones cubren dos categorías: **blockers de runtime** que impedían la ejecución en entornos limpios, y **deuda técnica** que comprometía la configurabilidad y el principio de mínimo privilegio.
 
+### Added
+
+- **[PR #43]** Sequence diagram de actores en runtime añadido al README — complementa el flowchart de alto nivel con un diagrama de secuencia Mermaid que muestra los actores reales (GitHub Actions, Gate 1, Gate 2, OpenRouter API) y los flujos condicionales de BLOCK/APPROVE con sus notas de contexto (ADR-0001).
+  - Fichero: `README.md`
+  - Rama: `feat/architecture-improvements` → `main`
+
 ### Fixed
+
+- **[PR #43]** `_get_ci_shas()` se llamaba dos veces por ejecución — una en `get_staged_files()` y otra en `_get_ci_diff()`, parseando el fichero JSON del evento de GitHub dos veces. Se introduce `self._shas_cache` en `__init__`: la primera llamada parsea y almacena el resultado; las siguientes lo reutilizan directamente.
+  - Fichero: `src/ingest.py`
+  - Rama: `feat/architecture-improvements` → `main`
 
 - **[PR #42]** Cadena de error en español en `src/main.py` traducida a inglés — `"Asegúrate de que GitManager tenga 'get_staged_files()'"` violaba ADR-0002. Última instancia de español en artefactos técnicos del proyecto.
   - Fichero: `src/main.py`
