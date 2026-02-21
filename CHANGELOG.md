@@ -32,6 +32,10 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ### Added
 
+- **[PR #39]** Filtro de estado en el dashboard web (`ALL` / `BLOCKED` / `APPROVED`) — El Security Scan Feed mostraba todos los runs sin posibilidad de filtrar. Se añaden tres botones de filtro en la cabecera de la tabla; el activo se resalta con el color de su estado (azul/rojo/verde). Implementado con `useState` local sin dependencias adicionales.
+  - Fichero: `web/src/app/page.tsx`
+  - Rama: `feat/web-status-filter` → `main`
+
 - **[PR #30]** Implementación de modos de telemetría ADR-0003 y migración a Rich UI — Se añaden tres modos configurables vía `OPSGUARD_TELEMETRY_MODE` (verbose / summary / silent). El modo `verbose` (por defecto) emite la tabla FinOps completa con tokens, coste y latencia usando `rich.Table`; `silent` suprime toda la telemetría para entornos CI restringidos. Sustituye los bloques ANSI/print crudos por componentes Rich estructurados.
   - Fichero: `src/ai.py`
   - Rama: `feat/telemetry-modes-rich-ui` → `main`

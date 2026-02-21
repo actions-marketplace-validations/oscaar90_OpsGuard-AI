@@ -55,7 +55,7 @@ OpsGuard-AI/
 └── README.md             # Punto de entrada de documentación
 ```
 
-> **Nota sobre `web/`:** El dashboard web es una interfaz de monitorización auxiliar generada mediante prompt engineering y desplegada en Vercel. **La ingeniería central del proyecto reside exclusivamente en `src/`** — el motor de análisis, la integración con el LLM, el pipeline CI/CD y la suite de tests. El directorio `web/` queda fuera del alcance de la evaluación técnica del TFM.
+> **Nota sobre `web/`:** El dashboard web es una interfaz de monitorización auxiliar (Next.js / Vercel) que consume la API de GitHub Actions para visualizar en tiempo real el historial de ejecuciones de OpsGuard: KPIs de bloqueos/aprobaciones, tasa de bloqueo y feed de actividad filtrable por estado (`ALL` / `BLOCKED` / `APPROVED`). **La ingeniería central del proyecto reside exclusivamente en `src/`** — el motor de análisis, la integración con el LLM, el pipeline CI/CD y la suite de tests. El directorio `web/` queda fuera del alcance de la evaluación técnica del TFM.
 
 ---
 
