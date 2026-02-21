@@ -45,6 +45,8 @@ OpsGuard-AI/
 │   ├── console_ui.py     # Interfaz de usuario (Rich/Typer)
 │   ├── ingest.py         # Procesamiento de Git Diffs y lectura de archivos
 │   └── main.py           # Punto de entrada (Entrypoint)
+├── scripts/              # Utilidades de diagnóstico y herramientas auxiliares
+│   └── net_diag.py       # Diagnóstico de conectividad de red (ping a endpoints)
 ├── tests/                # Suite de tests y fixtures (Shooting Range)
 ├── web/                  # Dashboard de monitorización auxiliar (Next.js/Vercel)
 ├── .env.example          # Plantilla de variables de entorno

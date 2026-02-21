@@ -2,7 +2,7 @@
 name = "opsguard-ai"
 version = "0.1.0"
 description = "AI-powered DevOps guardian GitHub Action"
-authors = ["Óscar Sánchez Pérez <oscaar90@gmail.com>"]
+authors = ["Óscar Sánchez Pérez <oscaarsanchez90@gmail.com>"]
 readme = "README.md"
 packages = [{include = "src"}]
 
