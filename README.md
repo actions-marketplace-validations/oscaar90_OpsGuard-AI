@@ -85,17 +85,40 @@ cp .env.example .env
 ```
 
 ### 3. Ejecutar Prueba de Concepto (Shooting Range)
-Hemos incluido una suite de archivos vulnerables (`tests/fixtures`) para demostrar la detección.
+Hemos incluido una suite de archivos intencionalmente vulnerables en `tests/fixtures/vulnerable_app/` para demostrar la detección. Pueden usarse de dos formas:
 
-**Comando:**
+#### 3a. Validación Automática (pytest)
+Ejecuta los tests unitarios del motor de detección. No requiere API Key.
+
 ```bash
-poetry run opsguard scan --path tests/fixtures/vulnerable_app
+poetry run pytest tests/test_security.py -v
 ```
 
-**Resultados Esperados:**
-- 🔴 **BLOCK (Regex):** `aws_creds.env` (AWS Key detectada).
-- 🔴 **BLOCK (AI Semántico):** `legacy_login.py` (SQL Injection detectada).
-- ✅ **PASS:** Archivos de documentación y código seguro.
+Valida el comportamiento del **Gate 1 (Regex)**: qué patrones bloquea, qué deja pasar al Gate 2 (IA) y que las líneas eliminadas nunca se penalizan.
+
+#### 3b. Demo Manual (Pipeline en vivo)
+Para ver el bloqueo de CI/CD en tiempo real, copie un fixture a otra ruta y abra una Pull Request:
+
+```bash
+# Ejemplo: credenciales AWS (bloqueado por Gate 1 — Regex)
+cp tests/fixtures/vulnerable_app/aws_creds.env src/aws_creds.env
+git checkout -b demo/shooting-range
+git add src/aws_creds.env && git commit -m "test: add config"
+git push origin demo/shooting-range
+# Abrir PR en GitHub → OpsGuard bloqueará el merge automáticamente
+```
+
+Consulte [`tests/fixtures/README.md`](tests/fixtures/README.md) para la guía completa con todos los fixtures y sus resultados esperados.
+
+**Inventario de Fixtures:**
+
+| Fichero | Vulnerabilidad | Gate que lo detecta |
+|---------|---------------|---------------------|
+| `aws_creds.env` | AWS Access Key (`AKIA…`) | Gate 1 — Regex |
+| `legacy_login.py` | SQL Injection | Gate 2 — IA |
+| `auth_middleware.py` | Developer Backdoor | Gate 2 — IA |
+| `config.php` | Password & API Key hardcodeadas | Gate 2 — IA |
+| `supply_chain_attack.py` | Typosquatting `ghrc.io` → `ghcr.io` | Gate 2 — IA |
 
 ---
 
