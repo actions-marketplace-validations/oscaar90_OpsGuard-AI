@@ -50,6 +50,11 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
   - Rama: `fix/skip-scan-typed-exception` → `main`
   - Cierra: FEEDBACK.md §5.2
 
+- **[PR #36]** Modelo LLM hardcodeado — `self.model` leído ahora desde `OPSGUARD_MODEL` env var con `google/gemini-2.0-flash-001` como valor por defecto. El comportamiento sin configuración adicional es idéntico. Permite cambiar de modelo (p.ej. a `google/gemini-2.0-flash-thinking-exp` o cualquier modelo de OpenRouter) sin tocar código fuente, igual que ya funcionan `OPSGUARD_RISK_THRESHOLD` y `OPSGUARD_TELEMETRY_MODE`. Se actualiza `.env.example` con todas las variables disponibles y se añade tabla de referencia en el README.
+  - Ficheros: `src/ai.py`, `.env.example`, `README.md`
+  - Rama: `fix/model-from-env-var` → `main`
+  - Cierra: FEEDBACK.md §8.1
+
 - **[PR #34]** URL `git clone` malformada en README y `authors` sin personalizar en `pyproject.toml` — La URL del Quick Start estaba envuelta en sintaxis Markdown `[url](url)` dentro de un bloque de código, haciendo que se copiara con corchetes en lugar de como URL limpia. El campo `authors` contenía el placeholder `Your Name <you@example.com>`. Ambos corregidos.
   - Ficheros: `README.md`, `pyproject.toml`
   - Rama: `fix/readme-clone-url-and-authors` → `main`
