@@ -39,7 +39,7 @@ class OpsGuardUI:
         explanation = result.get("explanation", "No details.")
         findings = result.get("findings", [])
 
-        # Semáforo
+        # Verdict traffic light
         if verdict == "APPROVE":
             v_style = "bold green"
         else:
@@ -62,7 +62,7 @@ class OpsGuardUI:
 
             for finding in findings:
                 sev = finding.get("severity", "UNK")
-                # Highlighting crítico
+                # Critical severity highlighting
                 sev_color = "red" if sev in ["CRITICAL", "HIGH"] else "yellow"
                 
                 table.add_row(

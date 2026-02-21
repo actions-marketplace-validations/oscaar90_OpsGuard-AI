@@ -35,7 +35,7 @@ def scan(
     OpsGuardUI.print_banner()
 
     def _load_ignore_spec(root: Path) -> pathspec.PathSpec:
-        """Carga patrones de exclusión."""
+        """Load exclusion patterns from .opsguardignore."""
         ignore_path = root / ".opsguardignore"
         lines = []
         if ignore_path.exists():
@@ -65,7 +65,7 @@ def scan(
 
         if not target_files:
             print("✨ No relevant changes detected (filtered by .opsguardignore).")
-            # Esto lanza una excepción 'Exit' que debemos dejar pasar
+            # typer.Exit is intentional — let it propagate
             raise typer.Exit(code=0)
 
         diff = manager.get_diff(files=target_files)
@@ -89,7 +89,7 @@ def scan(
         print("✨ Empty diff content.")
         raise typer.Exit(code=0)
 
-    # 2. FASE 1: Deterministic Shield (Regex)
+    # 2. Gate 1: Deterministic Shield (Regex)
     violations = policy.scan_diff(diff)
 
     if violations:
@@ -100,7 +100,7 @@ def scan(
 
     OpsGuardUI.print_regex_findings([]) 
 
-    # 3. FASE 2: Semantic Brain (AI Analysis)
+    # 3. Gate 2: Semantic Brain (AI Analysis)
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         typer.secho("⚠️ Missing OPENROUTER_API_KEY. Skipping AI.", fg=typer.colors.YELLOW)
@@ -113,7 +113,7 @@ def scan(
         typer.secho(f"❌ AI Engine Error: {e}", fg=typer.colors.RED)
         sys.exit(1)
 
-    # 4. Reporte
+    # 4. Report
     OpsGuardUI.print_ai_analysis(ai_result)
 
     risk_score = ai_result.get("risk_score", 0)

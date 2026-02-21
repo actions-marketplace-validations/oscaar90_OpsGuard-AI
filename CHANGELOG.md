@@ -50,6 +50,11 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
   - Rama: `fix/skip-scan-typed-exception` → `main`
   - Cierra: FEEDBACK.md §5.2
 
+- **[PR #37]** Comentarios en español homogeneizados a inglés — 12 comentarios y un docstring en `src/console_ui.py`, `src/ingest.py`, `src/main.py` y `pyproject.toml` usaban español, violando ADR-0002 (todos los artefactos técnicos en inglés). Traducidos al inglés manteniendo el significado exacto.
+  - Ficheros: `src/console_ui.py`, `src/ingest.py`, `src/main.py`, `pyproject.toml`
+  - Rama: `fix/spanish-comments-to-english` → `main`
+  - Cierra: FEEDBACK.md §4.3
+
 - **[PR #36]** Modelo LLM hardcodeado — `self.model` leído ahora desde `OPSGUARD_MODEL` env var con `google/gemini-2.0-flash-001` como valor por defecto. El comportamiento sin configuración adicional es idéntico. Permite cambiar de modelo (p.ej. a `google/gemini-2.0-flash-thinking-exp` o cualquier modelo de OpenRouter) sin tocar código fuente, igual que ya funcionan `OPSGUARD_RISK_THRESHOLD` y `OPSGUARD_TELEMETRY_MODE`. Se actualiza `.env.example` con todas las variables disponibles y se añade tabla de referencia en el README.
   - Ficheros: `src/ai.py`, `.env.example`, `README.md`
   - Rama: `fix/model-from-env-var` → `main`

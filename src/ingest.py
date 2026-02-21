@@ -50,12 +50,12 @@ class GitManager:
         except json.JSONDecodeError as e:
             raise GitIngestError(f"Failed to parse GitHub event JSON: {e}")
 
-        # --- FIX: DETECCIÓN DE EVENTOS NO-PR ---
+        # --- FIX: NON-PR EVENT DETECTION ---
         pull_request = event_data.get("pull_request")
-        
+
         if not pull_request:
-            # Si no hay objeto PR, verificamos si es un evento que debemos ignorar
-            # (Merges a main, Deletes, Pushes directos)
+            # No PR object — check if this is an event we should skip
+            # (merges to main, branch deletions, direct pushes)
             if "pusher" in event_data or "deleted" in event_data:
                 raise SkipScanSignal("Event is not a Pull Request (Push/Delete detected).")
             
@@ -99,7 +99,7 @@ class GitManager:
         Returns:
             The git diff as a string.
         """
-        # Preparar argumentos extra para gitpython (file filtering)
+        # Build extra args for gitpython (file filtering)
         # git diff <commit> -- file1 file2
         extra_args = ["--"] + files if files else []
 
