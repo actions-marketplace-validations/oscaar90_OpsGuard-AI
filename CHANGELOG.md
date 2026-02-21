@@ -32,11 +32,30 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ### Added
 
+- **[PR #30]** Implementación de modos de telemetría ADR-0003 y migración a Rich UI — Se añaden tres modos configurables vía `OPSGUARD_TELEMETRY_MODE` (verbose / summary / silent). El modo `verbose` (por defecto) emite la tabla FinOps completa con tokens, coste y latencia usando `rich.Table`; `silent` suprime toda la telemetría para entornos CI restringidos. Sustituye los bloques ANSI/print crudos por componentes Rich estructurados.
+  - Fichero: `src/ai.py`
+  - Rama: `feat/telemetry-modes-rich-ui` → `main`
+  - Cierra: FEEDBACK.md §4.1, §4.2, §5.1, §5.5
+
 - **[PR #25]** Suite de tests unitarios para el motor de Gate 1 (`SecurityPolicy`) — 15 tests en 3 clases que cubren: carga de configuración y validación de YAML, detección correcta de secretos con patrón estructural (AWS keys), validación de que vulnerabilidades semánticas (SQL injection, backdoors, typosquatting) pasan correctamente al Gate 2 (IA), y comportamiento ante edge cases del formato diff (líneas eliminadas, cabeceras, diff vacío).
   - Fichero: `tests/test_security.py`
   - Rama: `test/add-unit-tests-security` → `main`
 
 - **[PR #25]** Guía de demostración del Shooting Range (`tests/fixtures/README.md`) — Documento técnico para evaluadores con inventario de los 5 fixtures, atribución de gate por vulnerabilidad, y flujo paso a paso para reproducir el bloqueo del pipeline en GitHub Actions.
+
+### Fixed (continued)
+
+- **[PR #29]** `SkipScanSignal` — excepción tipada reemplaza string matching frágil — El código original lanzaba `GitIngestError("SKIP_SCAN: ...")` y en `main.py` lo capturaba comprobando `"SKIP_SCAN" in str(e)`. Se introduce `SkipScanSignal(GitIngestError)` como excepción propia; `main.py` la captura por tipo. Elimina acoplamiento implícito vía cadena de texto.
+  - Ficheros: `src/ingest.py`, `src/main.py`
+  - Rama: `fix/skip-scan-typed-exception` → `main`
+  - Cierra: FEEDBACK.md §5.2
+
+### Docs
+
+- **[PR #31]** README reescrito para tribunal — Tres mejoras orientadas a la evaluación académica: (1) párrafo introductorio reformulado para situar explícitamente la actuación "en el momento del Pull Request, antes de que ningún cambio llegue a la rama principal"; (2) nota de encuadre del directorio `web/` indicando que la ingeniería central reside en `src/` y que el dashboard queda fuera del alcance de la evaluación; (3) nueva sección `📋 Registro de Cambios` con enlace al `CHANGELOG.md` y tabla resumen de versiones.
+  - Fichero: `README.md`
+  - Rama: `docs/readme-clarity-and-changelog` → `main`
+  - Cierra: FEEDBACK.md §9.2 (parcial), recomendación del tribunal
 
 ---
 
