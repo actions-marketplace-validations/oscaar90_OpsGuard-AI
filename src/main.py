@@ -122,8 +122,9 @@ def scan(
 
     risk_score = ai_result.get("risk_score", 0)
     verdict = ai_result.get("verdict", "APPROVE")
-    
-    if verdict == "BLOCK" or risk_score >= 7:
+    risk_threshold = int(os.getenv("OPSGUARD_RISK_THRESHOLD", "7"))
+
+    if verdict == "BLOCK" or risk_score >= risk_threshold:
         OpsGuardUI.print_block_message()
         sys.exit(1)
     else:
