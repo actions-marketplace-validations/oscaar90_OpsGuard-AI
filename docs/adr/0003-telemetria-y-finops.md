@@ -3,6 +3,13 @@
 ## Estado
 Aceptado
 
+## Metadata
+
+| Campo | Valor |
+|-------|-------|
+| **Date** | 2026-02-01 |
+| **Deciders** | Óscar Sánchez Pérez |
+
 ## Contexto
 Los costes de inferencia de LLMs y la latencia son factores críticos para la adopción de OpsGuard-AI en pipelines de CI/CD reales. Las objeciones principales de los equipos de ingeniería ante herramientas basadas en LLM son:
 
