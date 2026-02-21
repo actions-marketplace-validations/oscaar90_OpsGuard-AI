@@ -72,6 +72,8 @@ export default function OpsGuardMonitor() {
   const [bootSequence, setBootSequence] = useState(true);
 
   const fetchWorkflowRuns = useCallback(async () => {
+    setLoading(true);
+
     if (!GITHUB_TOKEN || !OWNER || !REPO) {
       setError('Configuration missing. Check your .env.local file.');
       setLoading(false);
