@@ -4,8 +4,14 @@ import time
 from openai import OpenAI
 from typing import Dict, Any
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
+from rich import box
 
 load_dotenv()
+
+_console = Console()
+
 
 class AIEngineError(Exception):
     """Custom exception for AI Engine failures."""
@@ -20,6 +26,11 @@ PRICE_PER_1M_OUTPUT = 0.40
 # Max characters sent to the LLM to control cost and avoid context window overflow.
 # Gemini Flash 2.0 supports ~1M tokens, but large diffs increase cost and latency.
 MAX_DIFF_CHARS = 30_000
+
+# --- TELEMETRY MODE (ADR-0003) ---
+# Controls verbosity of FinOps and performance output.
+# Configure via OPSGUARD_TELEMETRY_MODE: verbose (default) | summary | silent
+TELEMETRY_MODE = os.getenv("OPSGUARD_TELEMETRY_MODE", "verbose").lower()
 
 # SCHEMA ENFORCEMENT & CONTEXT INJECTION
 SYSTEM_PROMPT = """
@@ -77,18 +88,23 @@ class AIEngine:
         self.model = "google/gemini-2.0-flash-001"
 
     def analyze_diff(self, diff_text: str) -> Dict[str, Any]:
-        print(f"🤖 OpsGuard Brain: Sending diff to {self.model}...")
-        # Nota: El diff ya viene filtrado desde main.py, optimizando el payload.
-        print(f"📦 Context Payload: {len(diff_text)} chars")
+        if TELEMETRY_MODE != "silent":
+            _console.print(f"🤖 OpsGuard Brain: Sending diff to [cyan]{self.model}[/cyan]...")
+        if TELEMETRY_MODE == "verbose":
+            _console.print(f"📦 Context Payload: {len(diff_text)} chars")
 
         start_time = time.time()
-        
-        # Truncado defensivo con feedback al usuario
+
+        # Defensive truncation — keeps cost and context window predictable.
         original_len = len(diff_text)
         truncated_diff = diff_text[:MAX_DIFF_CHARS]
-        if original_len > MAX_DIFF_CHARS:
+        if original_len > MAX_DIFF_CHARS and TELEMETRY_MODE != "silent":
             chars_lost = original_len - MAX_DIFF_CHARS
-            print(f"⚠️  Diff truncado: {original_len} → {MAX_DIFF_CHARS} chars ({chars_lost} chars descartados)")
+            _console.print(
+                f"⚠️  Diff truncated: {original_len} → {MAX_DIFF_CHARS} chars "
+                f"({chars_lost} discarded)",
+                style="yellow"
+            )
 
         try:
             response = self.client.chat.completions.create(
@@ -97,56 +113,65 @@ class AIEngine:
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": f"Analyze this git diff:\n\n{truncated_diff}"}
                 ],
-                temperature=0.1, # Determinista: reduce alucinaciones
+                temperature=0.1,  # Deterministic: reduces hallucinations
                 max_tokens=1024,
-                response_format={"type": "json_object"} 
+                response_format={"type": "json_object"}
             )
 
             end_time = time.time()
-            duration = end_time - start_time
-            print(f"\033[96m⏱️  AI Analysis Time: {duration:.2f} seconds\033[0m")
+            total_latency_ms = int((end_time - start_time) * 1000)
 
-            # --- FINOPS TELEMETRY EXTRACTION ---
+            if TELEMETRY_MODE == "verbose":
+                _console.print(
+                    f"⏱️  AI Analysis Time: {total_latency_ms / 1000:.2f}s",
+                    style="cyan"
+                )
+
+            # --- FINOPS TELEMETRY (ADR-0003) ---
             usage = response.usage
-            if usage:
+            if usage and TELEMETRY_MODE != "silent":
                 input_tok = usage.prompt_tokens
                 output_tok = usage.completion_tokens
-                
-                # Cálculo de costes con precisión float
                 input_cost = (input_tok / 1_000_000) * PRICE_PER_1M_INPUT
                 output_cost = (output_tok / 1_000_000) * PRICE_PER_1M_OUTPUT
                 total_cost = input_cost + output_cost
-                
-                # Visualización de tabla FinOps
-                print(f"""
-\033[92m### 💰 FinOps Telemetry
-| Metric | Value | Unit Cost |
-| :--- | :--- | :--- |
-| **Input Tokens** | `{input_tok}` | ${PRICE_PER_1M_INPUT}/1M |
-| **Output Tokens** | `{output_tok}` | ${PRICE_PER_1M_OUTPUT}/1M |
-| **Total Latency** | `{duration:.2f}s` | N/A |
-| **EXECUTION COST** | **`${total_cost:.6f}`** | **Negligible** |
-\033[0m""")
-            # -----------------------------------
+
+                table = Table(
+                    title="💰 FinOps Telemetry",
+                    box=box.MARKDOWN,
+                    style="green",
+                    title_style="bold green"
+                )
+                table.add_column("Metric", style="bold")
+                table.add_column("Value")
+                table.add_column("Unit Cost")
+                table.add_row("Input Tokens", str(input_tok), f"${PRICE_PER_1M_INPUT}/1M")
+                table.add_row("Output Tokens", str(output_tok), f"${PRICE_PER_1M_OUTPUT}/1M")
+                table.add_row("Total Latency", f"{total_latency_ms}ms", "N/A")
+                # TTFT requires streaming mode; non-streaming total latency ≈ TTFT.
+                table.add_row("TTFT (approx)", f"{total_latency_ms}ms", "non-streaming")
+                table.add_row("Execution Cost", f"${total_cost:.6f}", "Negligible")
+                _console.print(table)
+            # ------------------------------------
 
             content = response.choices[0].message.content
             clean_content = content.replace("```json", "").replace("```", "").strip()
-            
+
             try:
                 parsed_data = json.loads(clean_content)
             except json.JSONDecodeError:
-                print(f"⚠️ RAW AI RESPONSE (JSON Error): {clean_content}")
+                _console.print(f"⚠️ RAW AI RESPONSE (JSON Error): {clean_content}", style="yellow")
                 return {
                     "verdict": "BLOCK",
                     "risk_score": 10,
                     "explanation": "AI output parsing failed. Manual review required.",
                     "findings": []
                 }
-            
-            # Normalización
+
+            # Normalisation: handle unexpected list responses
             if isinstance(parsed_data, list):
                 parsed_data = parsed_data[0] if parsed_data else {}
-            
+
             return {
                 "verdict": parsed_data.get("verdict", "BLOCK"),
                 "risk_score": parsed_data.get("risk_score", 0),
@@ -155,8 +180,8 @@ class AIEngine:
             }
 
         except Exception as e:
-            print(f"\n❌ EXCEPCIÓN AI CRÍTICA: {str(e)}")
-            # Fail closed principle
+            _console.print(f"\n❌ AI Critical Error: {str(e)}", style="bold red")
+            # Fail closed: any engine failure blocks the pipeline.
             return {
                 "verdict": "BLOCK",
                 "risk_score": 10,
