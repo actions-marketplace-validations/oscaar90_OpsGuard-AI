@@ -8,34 +8,121 @@ on:
   # PR-only triggering is the recommended configuration.
 
 jobs:
-  security-audit:
-    name: 🕵️‍♂️ Semantic Security Scan
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 1 — Code Quality: formatting check (black)
+  # ─────────────────────────────────────────────────────────────────────────────
+  lint:
+    name: 🔍 Code Quality
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required: full history needed to compare PR base and head SHAs
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-py3.12-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: ${{ runner.os }}-py3.12-poetry-
+
       - name: Install Dependencies
-        run: poetry install --no-interaction --sync
+        run: poetry install --no-interaction
+
+      - name: Check formatting (black)
+        run: poetry run black --check src/ tests/
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 2 — Unit Tests: matrix across all supported Python versions
+  # ─────────────────────────────────────────────────────────────────────────────
+  test:
+    name: 🧪 Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-py${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: ${{ runner.os }}-py${{ matrix.python-version }}-poetry-
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction
+
+      - name: Run Test Suite
+        run: poetry run pytest tests/ -v
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 3 — Security Scan: runs only when lint + tests pass
+  # ─────────────────────────────────────────────────────────────────────────────
+  security-scan:
+    name: 🕵️‍♂️ Semantic Security Scan
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: full history needed to compare PR base and head SHAs
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-py3.12-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: ${{ runner.os }}-py3.12-poetry-
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction
 
       - name: Run OpsGuard AI Scan
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPSGUARD_RISK_THRESHOLD: 7
-        run: |
-          poetry run opsguard scan
+        run: poetry run opsguard scan
