@@ -89,6 +89,15 @@ cp .env.example .env
 # Edite .env y pegue la variable OPENROUTER_API_KEY
 ```
 
+El sistema es configurable mediante variables de entorno sin modificar código:
+
+| Variable | Descripción | Por defecto |
+|----------|-------------|-------------|
+| `OPENROUTER_API_KEY` | API Key de OpenRouter (**obligatoria**) | — |
+| `OPSGUARD_MODEL` | Modelo LLM a usar en Gate 2 | `google/gemini-2.0-flash-001` |
+| `OPSGUARD_RISK_THRESHOLD` | Puntuación mínima para bloquear | `7` |
+| `OPSGUARD_TELEMETRY_MODE` | Verbosidad de telemetría FinOps (`verbose` / `summary` / `silent`) | `verbose` |
+
 ### 3. Ejecutar Prueba de Concepto (Shooting Range)
 Hemos incluido una suite de archivos intencionalmente vulnerables en `tests/fixtures/vulnerable_app/` para demostrar la detección. Pueden usarse de dos formas:
 
