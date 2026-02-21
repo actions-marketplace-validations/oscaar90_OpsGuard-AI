@@ -50,7 +50,6 @@ class OpsGuardUI:
         console.print(f"│         📝 Summary: [italic]{explanation}[/italic]")
         console.print("╰──────────────────────────────────────────────────────────────────────────────╯")
 
-        # --- TABLA FORENSE ---
         if findings:
             console.print("\n[bold red]🕵️‍♂️  AI FORENSIC FINDINGS:[/bold red]")
             

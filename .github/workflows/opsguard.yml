@@ -3,9 +3,9 @@ name: OpsGuard Security Gate 🛡️
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  # Opcional: Si quieres escanear merges a main, deja push, 
-  # pero tu código actual abortará con "SKIP_SCAN" (que es lo correcto por ahora).
-  # Lo mejor es quitar 'push' si solo quieres escanear PRs.
+  # Note: adding 'push' here would trigger the workflow on direct pushes,
+  # but OpsGuard will exit cleanly via SkipScanSignal (non-PR events are skipped).
+  # PR-only triggering is the recommended configuration.
 
 jobs:
   security-audit:
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # CRÍTICO: Baja todo el historial para poder comparar diffs
+          fetch-depth: 0 # Required: full history needed to compare PR base and head SHAs
       
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -38,6 +38,4 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPSGUARD_RISK_THRESHOLD: 7
         run: |
-          # Ejecuta el escáner. 
-          # En PRs, esto analizará los cambios propuestos.
           poetry run opsguard scan

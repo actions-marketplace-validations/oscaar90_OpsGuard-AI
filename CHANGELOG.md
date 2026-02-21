@@ -12,6 +12,10 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ### Fixed
 
+- **[PR #41]** Eliminación de dependencia fantasma `pydantic` y homogeneización de comentarios a inglés — `pydantic ^2.5.0` estaba declarado como dependencia de producción en `pyproject.toml` pero nunca importado en ningún módulo de `src/`. Se elimina para reducir el grafo de dependencias. Adicionalmente se traducen al inglés los comentarios restantes en español en `.github/workflows/opsguard.yml`, `.opsguardignore` y `src/console_ui.py` (`# --- TABLA FORENSE ---`), cerrando la última deuda detectada en el análisis de calidad de código.
+  - Ficheros: `pyproject.toml`, `.github/workflows/opsguard.yml`, `.opsguardignore`, `src/console_ui.py`
+  - Rama: `fix/code-quality-remaining` → `main`
+
 - **[PR #24]** `NameError: MAX_DIFF_CHARS is not defined` — La constante que controla el truncado del diff enviado al LLM había sido referenciada pero nunca declarada. Causaba fallo total en runtime. Se define como `MAX_DIFF_CHARS = 30_000` junto a las constantes FinOps existentes.
   - Fichero: `src/ai.py`
   - Rama: `fix/diff-truncation-feedback` → `main`
