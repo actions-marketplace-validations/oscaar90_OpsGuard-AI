@@ -123,30 +123,6 @@ graph TD
 
 ---
 
-## 🔬 Caso Real: Detección de Supply-Chain Attack (Typosquatting `ghrc.io`)
-
-### Contexto del Incidente
-En febrero de 2025 se descubrió que el dominio **`ghrc.io`** — una transposición deliberada de **`ghcr.io`** (GitHub Container Registry) — estaba siendo utilizado como vector de ataque. Este dominio de typosquatting, reportado a través de un programa de Bug Bounty, clonaba la interfaz del registro oficial de contenedores de GitHub para interceptar imágenes Docker.
-
-Este tipo de ataques de **Supply-Chain** ha afectado masivamente al ecosistema de GitHub, con cientos de miles de intentos documentados de envenenamiento de paquetes y registros. Un desarrollador que escriba `ghrc.io` en vez de `ghcr.io` en un `Dockerfile` o script CI podría:
-- **Enviar imágenes corporativas** a un registro controlado por atacantes.
-- **Descargar imágenes troyanizadas** que reemplacen dependencias legítimas.
-- **Comprometer toda la cadena de despliegue** sin que ningún linter o escáner estático lo detecte.
-
-### Prueba de Detección
-Hemos incluido un fixture de prueba (`supply_chain_attack.py`) que simula este escenario y lo hemos ejecutado contra OpsGuard:
-
-| Motor | Resultado | Detalle |
-| :--- | :---: | :--- |
-| **Gate 1 — Regex** | ✅ PASS | No existe patrón determinista para typosquatting de dominios |
-| **Gate 2 — IA Semántica** | ⛔ **BLOCK** | `risk_score: 7/10`, Severity: `HIGH`. Identificó correctamente `ghrc.io` como typosquatting de `ghcr.io` |
-
-> **💡 Valor diferencial:** Este caso demuestra por qué el análisis semántico por IA es un complemento necesario al Regex. Un escáner estático convencional (SAST) **nunca** detectaría este ataque porque `ghrc.io` es un dominio válido sintácticamente. Solo un motor con **razonamiento contextual** puede identificar la anomalía.
-
-📍 **Evidencia CI/CD:** Consulte el historial de [GitHub Actions](../../actions) para ver el bloqueo automatizado de este fixture en el pipeline.
-
----
-
 ## 🤝 Estándares de Desarrollo (Conventional Commits)
 Este proyecto sigue estrictamente la especificación **[Conventional Commits](https://www.conventionalcommits.org/)**.
 
