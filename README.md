@@ -5,7 +5,7 @@
 ![Status](https://img.shields.io/badge/status-stable-green)
 ![CI/CD](https://img.shields.io/badge/github--actions-enabled-brightgreen)
 
-OpsGuard es una herramienta de Ingeniería de Plataforma diseñada para detener vulnerabilidades antes de que lleguen a producción. Combina **Regex de Alta Entropía** (detección determinista) con **Análisis Semántico por IA** (razonamiento lógico) para reducir falsos positivos y asegurar el ciclo de vida del desarrollo.
+OpsGuard es una herramienta de Ingeniería de Plataforma que actúa como **puerta de seguridad en el momento del Pull Request**, antes de que ningún cambio llegue a la rama principal. Analiza el `git diff` de cada PR en tiempo real mediante un sistema de doble puerta: **Regex de Alta Entropía** (detección determinista de secretos) seguido de **Análisis Semántico por IA** (razonamiento contextual sobre vulnerabilidades lógicas). Si detecta una amenaza, bloquea el merge automáticamente. Si el código es seguro, aprueba el pipeline sin fricción.
 
 ---
 
@@ -46,11 +46,14 @@ OpsGuard-AI/
 │   ├── ingest.py         # Procesamiento de Git Diffs y lectura de archivos
 │   └── main.py           # Punto de entrada (Entrypoint)
 ├── tests/                # Suite de tests y fixtures (Shooting Range)
-├── web/                  # Recursos estáticos y Landing Page del proyecto
+├── web/                  # Dashboard de monitorización auxiliar (Next.js/Vercel)
 ├── .env.example          # Plantilla de variables de entorno
 ├── pyproject.toml        # Configuración de dependencias (Poetry)
+├── CHANGELOG.md          # Registro de versiones y ciclo de mejora de calidad
 └── README.md             # Punto de entrada de documentación
 ```
+
+> **Nota sobre `web/`:** El dashboard web es una interfaz de monitorización auxiliar generada mediante prompt engineering y desplegada en Vercel. **La ingeniería central del proyecto reside exclusivamente en `src/`** — el motor de análisis, la integración con el LLM, el pipeline CI/CD y la suite de tests. El directorio `web/` queda fuera del alcance de la evaluación técnica del TFM.
 
 ---
 
@@ -180,6 +183,20 @@ Este proyecto sigue estrictamente la especificación **[Conventional Commits](ht
 | `docs` | Cambios en documentación | `docs: add ADR 001` |
 | `chore` | Mantenimiento / Configuración | `chore: update poetry dependencies` |
 | `test` | Tests unitarios o de integración | `test: add shooting range fixtures` |
+
+---
+
+## 📋 Registro de Cambios (CHANGELOG)
+
+El proyecto incluye un [`CHANGELOG.md`](CHANGELOG.md) que documenta el ciclo completo de ingeniería de calidad realizado sobre la versión de entrega del TFM.
+
+No es un simple historial de commits: cada entrada describe el **problema identificado**, la **decisión técnica tomada** y la **Pull Request que lo implementa**, permitiendo al evaluador verificar cada cambio directamente en GitHub.
+
+| Versión | Descripción |
+|---------|-------------|
+| `0.3.0` | Quality Audit Sprint — corrección de blockers, tests unitarios, telemetría ADR-0003, principio de mínimo privilegio |
+| `0.2.0` | Supply-Chain Detection & Action Alignment |
+| `0.1.0` | TFM Final Delivery — versión de entrega académica |
 
 ---
 
