@@ -16,6 +16,11 @@ class AIEngineError(Exception):
 PRICE_PER_1M_INPUT = 0.10
 PRICE_PER_1M_OUTPUT = 0.40
 
+# --- DIFF PROCESSING LIMITS ---
+# Max characters sent to the LLM to control cost and avoid context window overflow.
+# Gemini Flash 2.0 supports ~1M tokens, but large diffs increase cost and latency.
+MAX_DIFF_CHARS = 30_000
+
 # SCHEMA ENFORCEMENT & CONTEXT INJECTION
 SYSTEM_PROMPT = """
 ROLE: You are OpsGuard-AI, a Senior Application Security Engineer audit bot.
@@ -78,13 +83,19 @@ class AIEngine:
 
         start_time = time.time()
         
+        # Truncado defensivo con feedback al usuario
+        original_len = len(diff_text)
+        truncated_diff = diff_text[:MAX_DIFF_CHARS]
+        if original_len > MAX_DIFF_CHARS:
+            chars_lost = original_len - MAX_DIFF_CHARS
+            print(f"⚠️  Diff truncado: {original_len} → {MAX_DIFF_CHARS} chars ({chars_lost} chars descartados)")
+
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
-                    # Mantenemos el truncate defensivo.
-                    {"role": "user", "content": f"Analyze this git diff:\n\n{diff_text[:30000]}"}
+                    {"role": "user", "content": f"Analyze this git diff:\n\n{truncated_diff}"}
                 ],
                 temperature=0.1, # Determinista: reduce alucinaciones
                 max_tokens=1024,
