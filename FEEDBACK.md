@@ -278,7 +278,9 @@ El umbral `>= 7` aparece en tres lugares conceptuales (código, workflow, README
 
 ### 8.3 — Sin soporte para múltiples proveedores LLM
 
-La arquitectura usa el cliente `openai` SDK apuntando a OpenRouter, lo que es técnicamente correcto como abstracción. Sin embargo, no hay una interfaz o clase abstracta `LLMProvider` que permitiría cambiar de proveedor sin modificar `AIEngine`. Para un TFM en el contexto de "Máster en Desarrollo con IA", demostrar el patrón de abstracción de proveedor sería valorable.
+> ⬛ **DESCARTADO** — No aplica. OpenRouter es la capa de abstracción de proveedores.
+
+La observación original asumía que se necesitaría una interfaz `LLMProvider` para poder cambiar entre Anthropic, Google, OpenAI, etc. sin modificar código. Sin embargo, **OpenRouter ya cumple exactamente ese rol**: expone una API unificada compatible con el cliente `openai` SDK que permite usar cualquier modelo de cualquier proveedor simplemente cambiando el `model` string. Añadir una abstracción propia encima sería redundante — se estaría abstraindo lo que ya está abstraído. El caso de uso real (cambiar de modelo) queda resuelto por `OPSGUARD_MODEL` env var (PR #36).
 
 ---
 
@@ -326,23 +328,26 @@ Para equilibrar el análisis, estas son las áreas donde el proyecto demuestra s
 
 ## 11. Priorización Recomendada
 
-| Prioridad | Área | Esfuerzo estimado |
-|-----------|------|-------------------|
-| ~~🔴 **BLOCKER**~~ | ~~Definir `MAX_DIFF_CHARS` en `src/ai.py`~~ | ✅ PR #24 mergeada |
-| ~~🔴 **BLOCKER**~~ | ~~Añadir `pathspec` a `pyproject.toml`~~ | ✅ PR #23 mergeada |
-| 🟠 **ALTO** | Escribir tests unitarios para `security.py` (mínimo) | PR #25 abierta |
-| 🟠 **ALTO** | Leer `OPSGUARD_RISK_THRESHOLD` desde `os.getenv()` | PR #26 abierta |
-| ~~🟠 **ALTO**~~ | ~~Eliminar o corregir `action.yml` (referencia a `OPENAI_API_KEY`)~~ | ✅ Verificado en main |
-| 🟡 **MEDIO** | Eliminar `pull-requests: write` del workflow hasta que se implemente | PR #27 abierta |
-| 🟡 **MEDIO** | Reemplazar `SKIP_SCAN` string matching con excepción tipada | ~20 min |
-| 🟡 **MEDIO** | Alinear telemetría en `ai.py` con el formato JSON del ADR-0003 | ~1h |
-| 🟡 **MEDIO** | Corregir URL de `git clone` en README | ~2 min |
-| 🟡 **MEDIO** | Añadir fecha y campo `Deciders` a los ADRs | ~15 min |
-| 🟢 **BAJO** | Migrar `print()` de `ai.py` a `console.print()` de Rich | ~30 min |
-| 🟢 **BAJO** | Documentar o mover `src/net_diag.py` | ~15 min |
-| 🟢 **BAJO** | Personalizar `authors` en `pyproject.toml` | ~2 min |
-| 🟢 **BAJO** | Homogeneizar idioma de comentarios (inglés) según ADR-0002 | ~30 min |
+| Prioridad | Área | Estado |
+|-----------|------|--------|
+| ~~🔴 **BLOCKER**~~ | ~~Definir `MAX_DIFF_CHARS` en `src/ai.py`~~ | ✅ PR #24 |
+| ~~🔴 **BLOCKER**~~ | ~~Añadir `pathspec` a `pyproject.toml`~~ | ✅ PR #23 |
+| ~~🟠 **ALTO**~~ | ~~Escribir tests unitarios para `security.py`~~ | ✅ PR #25 |
+| ~~🟠 **ALTO**~~ | ~~Leer `OPSGUARD_RISK_THRESHOLD` desde `os.getenv()`~~ | ✅ PR #26 |
+| ~~🟠 **ALTO**~~ | ~~Corregir `action.yml` (referencia a `OPENAI_API_KEY`)~~ | ✅ PR #21 (previo) |
+| ~~🟡 **MEDIO**~~ | ~~Eliminar `pull-requests: write` del workflow~~ | ✅ PR #27 |
+| ~~🟡 **MEDIO**~~ | ~~Reemplazar `SKIP_SCAN` string matching con excepción tipada~~ | ✅ PR #29 |
+| ~~🟡 **MEDIO**~~ | ~~Alinear telemetría en `ai.py` con ADR-0003 (modos + Rich UI)~~ | ✅ PR #30 |
+| ~~🟡 **MEDIO**~~ | ~~Corregir URL de `git clone` en README~~ | ✅ PR #34 |
+| ~~🟡 **MEDIO**~~ | ~~Añadir `Date` y `Deciders` a los ADRs~~ | ✅ PR #32 |
+| ~~🟢 **BAJO**~~ | ~~Migrar `print()` de `ai.py` a `console.print()` de Rich~~ | ✅ PR #30 |
+| ~~🟢 **BAJO**~~ | ~~Documentar o mover `src/net_diag.py`~~ | ✅ PR #35 |
+| ~~🟢 **BAJO**~~ | ~~Personalizar `authors` en `pyproject.toml`~~ | ✅ PR #34/#35 |
+| ~~🟢 **BAJO**~~ | ~~Homogeneizar idioma de comentarios (inglés) según ADR-0002~~ | ✅ PR #37 |
+| ~~🟢 **BAJO**~~ | ~~Modelo LLM hardcodeado — leer desde `OPSGUARD_MODEL` env var~~ | ✅ PR #36 |
+| ⬛ **DESCARTADO** | Abstracción `LLMProvider` (§8.3) — OpenRouter ya es la abstracción | No aplica |
 
 ---
 
 *Revisión generada el 2026-02-21. Basada en análisis estático del código fuente sin ejecución del sistema.*
+*Ciclo de correcciones cerrado el 2026-02-21. 14 de 15 puntos resueltos (1 descartado por no aplicar). PRs #23–#37.*
