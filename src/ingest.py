@@ -12,6 +12,15 @@ class GitIngestError(Exception):
     pass
 
 
+class SkipScanSignal(GitIngestError):
+    """Raised when the GitHub event type does not require scanning.
+
+    Examples: direct push to main, branch deletion. These are valid
+    git events but OpsGuard only operates on Pull Requests.
+    """
+    pass
+
+
 class GitManager:
     """Encapsulates gitpython operations for reading repository changes."""
 
@@ -48,8 +57,7 @@ class GitManager:
             # Si no hay objeto PR, verificamos si es un evento que debemos ignorar
             # (Merges a main, Deletes, Pushes directos)
             if "pusher" in event_data or "deleted" in event_data:
-                 # Usamos una keyword específica "SKIP_SCAN" para capturarla en main
-                 raise GitIngestError("SKIP_SCAN: Event is not a Pull Request (Push/Delete detected).")
+                raise SkipScanSignal("Event is not a Pull Request (Push/Delete detected).")
             
             raise GitIngestError("No pull_request data found in GitHub event")
 
