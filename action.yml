@@ -1,6 +1,6 @@
 name: "OpsGuard AI"
 description: "AI-powered DevOps guardian for automated code review and security analysis"
-author: "Your Name"
+author: "Óscar Sánchez Pérez"
 
 branding:
   icon: "shield"
@@ -10,8 +10,8 @@ inputs:
   github_token:
     description: "GitHub token for API access"
     required: true
-  openai_api_key:
-    description: "OpenAI API key for AI analysis"
+  openrouter_api_key:
+    description: "OpenRouter API key for AI analysis (Gemini 2.0 Flash)"
     required: true
 
 runs:
@@ -19,4 +19,4 @@ runs:
   image: "Dockerfile"
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
-    OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+    OPENROUTER_API_KEY: ${{ inputs.openrouter_api_key }}
