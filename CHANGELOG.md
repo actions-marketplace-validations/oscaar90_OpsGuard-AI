@@ -12,6 +12,11 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ### Fixed
 
+- **[PR #42]** Cadena de error en español en `src/main.py` traducida a inglés — `"Asegúrate de que GitManager tenga 'get_staged_files()'"` violaba ADR-0002. Última instancia de español en artefactos técnicos del proyecto.
+  - Fichero: `src/main.py`
+  - Rama: `fix/spanish-string-main-py` → `main`
+  - Cierra: ADR-0002 (100% cumplimiento)
+
 - **[PR #41]** Eliminación de dependencia fantasma `pydantic` y homogeneización de comentarios a inglés — `pydantic ^2.5.0` estaba declarado como dependencia de producción en `pyproject.toml` pero nunca importado en ningún módulo de `src/`. Se elimina para reducir el grafo de dependencias. Adicionalmente se traducen al inglés los comentarios restantes en español en `.github/workflows/opsguard.yml`, `.opsguardignore` y `src/console_ui.py` (`# --- TABLA FORENSE ---`), cerrando la última deuda detectada en el análisis de calidad de código.
   - Ficheros: `pyproject.toml`, `.github/workflows/opsguard.yml`, `.opsguardignore`, `src/console_ui.py`
   - Rama: `fix/code-quality-remaining` → `main`

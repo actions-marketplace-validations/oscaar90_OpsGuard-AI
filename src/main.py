@@ -78,7 +78,7 @@ def scan(
         raise typer.Exit(code=0)
 
     except AttributeError:
-        typer.secho("❌ API Mismatch: Asegúrate de que GitManager tenga 'get_staged_files()'.", fg=typer.colors.RED)
+        typer.secho("❌ API Mismatch: GitManager is missing the 'get_staged_files()' method.", fg=typer.colors.RED)
         sys.exit(1)
 
     except Exception as e:
