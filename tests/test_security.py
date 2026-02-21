@@ -78,10 +78,10 @@ class TestGate1SecretDetection:
         content = (FIXTURES / "aws_creds.env").read_text()
         violations = self.policy.scan_diff(make_diff(content))
 
-        assert len(violations) > 0, "Expected AWS key violation, got none"
-        assert any(
-            "AWS" in v for v in violations
-        ), f"Violation must reference AWS rule. Got: {violations}"
+        # INTENTIONAL FAILURE — demo/ci-test-failure branch
+        # Deliberately wrong assertion to show the test job blocking
+        # the security-scan via needs: [lint, test].
+        assert violations == [], f"Expected no violations (DEMO FAILURE). Got: {violations}"
 
     def test_aws_violation_message_contains_pattern_name(self):
         """Each violation message must include the rule name for audit traceability."""
