@@ -50,7 +50,22 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
   - Rama: `fix/skip-scan-typed-exception` → `main`
   - Cierra: FEEDBACK.md §5.2
 
+- **[PR #34]** URL `git clone` malformada en README y `authors` sin personalizar en `pyproject.toml` — La URL del Quick Start estaba envuelta en sintaxis Markdown `[url](url)` dentro de un bloque de código, haciendo que se copiara con corchetes en lugar de como URL limpia. El campo `authors` contenía el placeholder `Your Name <you@example.com>`. Ambos corregidos.
+  - Ficheros: `README.md`, `pyproject.toml`
+  - Rama: `fix/readme-clone-url-and-authors` → `main`
+  - Cierra: FEEDBACK.md §9.2, §9.1
+
+- **[PR #35]** `src/net_diag.py` movido a `scripts/` y email de autor corregido — La utilidad de diagnóstico de red (wrapper de `ping`) residía en `src/` sin estar importada por ningún módulo del pipeline, lo que implicaba erróneamente que era parte del core. Se mueve a `scripts/`, lugar estándar para herramientas auxiliares standalone, y se documenta en el árbol de estructura del README. Adicionalmente se corrige el email del autor en `pyproject.toml`.
+  - Ficheros: `scripts/net_diag.py` (antes `src/`), `README.md`, `pyproject.toml`
+  - Rama: `fix/net-diag-placement-and-docs` → `main`
+  - Cierra: FEEDBACK.md §5.4, §9.1 (email)
+
 ### Docs
+
+- **[PR #32]** Añadidos campos `Date` y `Deciders` a los tres ADRs — ADR-0001, ADR-0002 y ADR-0003 carecían de los campos de metadata requeridos por el formato MADR estándar. Se añade una tabla `## Metadata` a cada documento con la fecha de decisión (`2026-02-01`) y el decisor (`Óscar Sánchez Pérez`).
+  - Ficheros: `docs/adr/0001-*`, `docs/adr/0002-*`, `docs/adr/0003-*`
+  - Rama: `docs/adr-metadata-date-deciders` → `main`
+  - Cierra: FEEDBACK.md §9.4
 
 - **[PR #31]** README reescrito para tribunal — Tres mejoras orientadas a la evaluación académica: (1) párrafo introductorio reformulado para situar explícitamente la actuación "en el momento del Pull Request, antes de que ningún cambio llegue a la rama principal"; (2) nota de encuadre del directorio `web/` indicando que la ingeniería central reside en `src/` y que el dashboard queda fuera del alcance de la evaluación; (3) nueva sección `📋 Registro de Cambios` con enlace al `CHANGELOG.md` y tabla resumen de versiones.
   - Fichero: `README.md`
