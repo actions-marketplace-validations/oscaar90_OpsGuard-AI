@@ -30,13 +30,23 @@ class GitManager:
             self.repo = Repo(repo_path)
         except InvalidGitRepositoryError as e:
             raise GitIngestError(f"Invalid git repository at '{repo_path}': {e}")
+        # Cache for CI SHAs — _get_ci_shas() is called by both get_staged_files()
+        # and _get_ci_diff(), so we parse the GitHub event JSON only once per run.
+        self._shas_cache: Optional[Tuple[str, str]] = None
 
     def is_ci(self) -> bool:
         """Check if running in GitHub Actions CI environment."""
         return os.environ.get("GITHUB_ACTIONS") is not None
 
     def _get_ci_shas(self) -> Tuple[str, str]:
-        """Helper: Extract base and head SHAs from GitHub Event JSON."""
+        """Helper: Extract base and head SHAs from GitHub Event JSON.
+
+        Result is cached after the first call to avoid parsing the event
+        file twice per execution (once in get_staged_files, once in get_diff).
+        """
+        if self._shas_cache is not None:
+            return self._shas_cache
+
         event_path = os.environ.get("GITHUB_EVENT_PATH")
         if not event_path:
             raise GitIngestError("GITHUB_EVENT_PATH environment variable not set")
@@ -66,8 +76,9 @@ class GitManager:
 
         if not base_sha or not head_sha:
             raise GitIngestError("Missing base.sha or head.sha in pull_request event data")
-            
-        return base_sha, head_sha
+
+        self._shas_cache = (base_sha, head_sha)
+        return self._shas_cache
 
     def get_staged_files(self) -> List[str]:
         """Get list of changed filenames (for pre-filtering).

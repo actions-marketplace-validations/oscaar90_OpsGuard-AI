@@ -142,20 +142,51 @@ El sistema analiza los `git diffs` para optimizar costes y latencia mediante un 
 ```mermaid
 graph TD
     User[Developer] -->|Git Push/PR| CLI[OpsGuard CLI]
-    
+
     subgraph "Hybrid Analysis Engine"
         CLI -->|Step 1: Static Analysis| Regex[Regex Engine]
         Regex -->|"Match Found?"| Gate1{Sensitive Pattern?}
-        
+
         Gate1 -- Yes --> Block["❌ BLOCK PIPELINE"]
         Gate1 -- No --> AI["Step 2: AI Semantic Analysis"]
-        
+
         AI -->|Contextual Reasoning| Gate2{Risk Score > 7?}
         Gate2 -- Yes --> Block
         Gate2 -- No --> Pass["✅ APPROVE DEPLOY"]
     end
-    
+
     Block & Pass --> Report["CI/CD Report (Console/GitHub)"]
+```
+
+### Sequence Diagram — Runtime Actors
+
+```mermaid
+sequenceDiagram
+    actor Dev as Developer
+    participant GHA as GitHub Actions
+    participant G1 as Gate 1 · Regex Engine
+    participant G2 as Gate 2 · AI Engine
+    participant OR as OpenRouter API
+
+    Dev->>GHA: git push → Pull Request opened
+    GHA->>G1: git diff (PR base..head)
+
+    alt Sensitive pattern detected
+        G1-->>GHA: ❌ BLOCK (exit 1)
+        Note right of G1: Secret never reaches<br/>external API (ADR-0001)
+    else No structural pattern found
+        G1->>G2: diff payload (clean)
+        G2->>OR: POST /chat/completions<br/>(model, system_prompt, diff)
+        OR-->>G2: JSON · verdict + risk_score
+
+        alt risk_score ≥ threshold (default 7)
+            G2-->>GHA: ❌ BLOCK (exit 1)
+        else risk_score < threshold
+            G2-->>GHA: ✅ APPROVE (exit 0)
+        end
+    end
+
+    GHA-->>Dev: CI check result (Pass / Fail)
 ```
 
 ---
