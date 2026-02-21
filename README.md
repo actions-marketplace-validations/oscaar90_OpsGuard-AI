@@ -73,7 +73,7 @@ Requisitos: Python 3.12+ y [Poetry](https://python-poetry.org/docs/).
 
 ```bash
 # 1. Clonar repositorio
-git clone [https://github.com/oscaar90/OpsGuard-AI.git](https://github.com/oscaar90/OpsGuard-AI.git)
+git clone https://github.com/oscaar90/OpsGuard-AI.git
 cd OpsGuard-AI
 
 # 2. Instalar dependencias (Entorno virtual aislado)
