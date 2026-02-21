@@ -278,9 +278,37 @@ El umbral `>= 7` aparece en tres lugares conceptuales (código, workflow, README
 
 ### 8.3 — Sin soporte para múltiples proveedores LLM
 
-> ⬛ **DESCARTADO** — No aplica. OpenRouter es la capa de abstracción de proveedores.
+> ⬛ **DESCARTADO por decisión de arquitectura** — Revisión técnica 2026-02-21. Decider: Óscar Sánchez Pérez.
 
-La observación original asumía que se necesitaría una interfaz `LLMProvider` para poder cambiar entre Anthropic, Google, OpenAI, etc. sin modificar código. Sin embargo, **OpenRouter ya cumple exactamente ese rol**: expone una API unificada compatible con el cliente `openai` SDK que permite usar cualquier modelo de cualquier proveedor simplemente cambiando el `model` string. Añadir una abstracción propia encima sería redundante — se estaría abstraindo lo que ya está abstraído. El caso de uso real (cambiar de modelo) queda resuelto por `OPSGUARD_MODEL` env var (PR #36).
+#### Propuesta revisada
+
+Durante la sesión de auditoría técnica asistida por IA, se propuso implementar un patrón de abstracción de proveedor LLM mediante una interfaz `LLMProvider`:
+
+```python
+# Propuesta discutida y descartada
+class LLMProvider(ABC):
+    @abstractmethod
+    def complete(self, system: str, user: str) -> str: ...
+
+class OpenRouterProvider(LLMProvider): ...
+class AnthropicProvider(LLMProvider): ...
+```
+
+La motivación era permitir cambiar de proveedor (Anthropic, OpenAI, Google directo) sin modificar `AIEngine`.
+
+#### Decisión y razonamiento
+
+**Propuesta descartada.** La premisa de la mejora es incorrecta en el contexto de este sistema:
+
+1. **OpenRouter ya es la capa de abstracción de proveedores.** Su API unificada, compatible con el cliente `openai` SDK, permite acceder a modelos de Google, Anthropic, Meta, Mistral y cualquier otro proveedor simplemente cambiando el identificador de modelo. No hay necesidad de una interfaz propia porque el contrato que resuelve ese problema ya existe a nivel de infraestructura.
+
+2. **Abstraer lo que ya está abstraído introduce complejidad sin valor.** Una interfaz `LLMProvider` requeriría implementar al menos dos providers concretos para tener sentido. Con un único proveedor real (OpenRouter), la interfaz existiría únicamente "por si acaso" — un anti-patrón de diseño conocido como *speculative generality*.
+
+3. **El caso de uso real ya está cubierto.** La necesidad concreta identificada en §8.1 (cambiar de modelo sin tocar código) queda resuelta por `OPSGUARD_MODEL` env var (PR #36). El cambio de proveedor completo es un escenario hipotético sin demanda real en este proyecto.
+
+#### Conclusión
+
+La abstracción propuesta es técnicamente válida como ejercicio académico, pero su implementación en este sistema añadiría código cuya única función sería existir. Se documenta el razonamiento para evidenciar que la ausencia de esta abstracción es una **decisión de diseño consciente**, no una omisión.
 
 ---
 
