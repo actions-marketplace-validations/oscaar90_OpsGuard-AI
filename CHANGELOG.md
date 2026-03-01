@@ -6,6 +6,25 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.6.0] — 2026-03-01 · Architecture Documentation Sprint
+
+> Ciclo de mejora de arquitectura iniciado a partir del criterio **Arquitectura y Diseño Técnico** (9.0/10, gap −1.0 pt). La evaluación señalaba un único punto ciego: la política fail-closed de Gate 2 existía en el código pero no estaba documentada como decisión consciente. Este sprint lo cierra con el ADR que faltaba y completa los contratos de módulo de `src/ai.py`.
+
+### Added
+
+- **[PR #51]** ADR-0004: Política Fail-Closed en Gate 2 — Documenta formalmente el trade-off arquitectónico entre **disponibilidad** (fail-open: el pipeline continúa si la IA falla) y **seguridad** (fail-closed: el pipeline se bloquea si la IA falla). La decisión elegida es fail-closed: cualquier excepción en `analyze_diff()` retorna `verdict: BLOCK, risk_score: 10` sin propagar el error. El ADR recoge la justificación de seguridad, las consecuencias negativas (impacto en disponibilidad ante caídas de OpenRouter) y las mitigaciones operacionales recomendadas para producción.
+  - Fichero: `docs/adr/0004-fail-closed-policy.md`
+  - Rama: `feat/architecture-documentation` → `main`
+
+- **[PR #51]** Docstrings de contrato en `src/ai.py` — `AIEngine` y `analyze_diff()` eran los únicos módulos del sistema sin contratos documentados. Se añaden:
+  - Docstring de clase `AIEngine`: describe su responsabilidad (Gate 2 semántico), la dependencia de OpenRouter y la referencia explícita a ADR-0004 para la política de errores.
+  - Docstring de `__init__`: documenta la excepción `AIEngineError` que lanza si falta `OPENROUTER_API_KEY`.
+  - Docstring de `analyze_diff()`: documenta los args, el dict de retorno completo (keys `verdict`, `risk_score`, `explanation`, `findings`) y el contrato de no-lanzamiento de excepciones con referencia a ADR-0004 y ADR-0005.
+  - Fichero: `src/ai.py`
+  - Rama: `feat/architecture-documentation` → `main`
+
+---
+
 ## [0.5.0] — 2026-03-01 · Code Quality Sprint
 
 > Ciclo de mejora de implementación iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Implementación del Código** obtuvo un 8.5/10 (gap de −1.5 pts) por tres decisiones de implementación incompletas: el `SYSTEM_PROMPT` hardcodeado en lugar de externalizado, la falta de documentación formal de la deuda técnica del truncado de diff, y la ausencia de auditoría automática de dependencias en CI.
