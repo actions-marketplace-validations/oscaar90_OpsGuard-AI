@@ -6,6 +6,20 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.2] - 2026-03-01 · Operational Alerting Sprint
+
+> Ciclo de mejora de CI/CD iniciado tras la segunda evaluacion TFM (9.85/10). El criterio **CI/CD y DevOps** obtuvo 9.5/10 con una observacion concreta: "El job de notificacion en caso de bloqueo (Slack, email, o un GitHub Issue automatico) que mencione en la primera revision sigue sin estar. En produccion un equipo necesita saber cuando OpsGuard bloquea algo, no solo verlo en los logs de CI." Este sprint cierra ese eslabón del ciclo operacional.
+
+### Added
+
+- **[PR #58]** Creacion automatica de GitHub Issue cuando OpsGuard bloquea un PR - Se añade el step `Create Security Alert Issue` al job `security-scan` del workflow `opsguard.yml`. El step se activa unicamente si el scan falla (`if: failure()`) y usa `actions/github-script@v7` para crear un Issue estructurado via la API de GitHub con toda la informacion de trazabilidad: PR bloqueado, autor, rama, enlace al run de CI y timestamp. El Issue lleva la etiqueta `security-block` (rojo `#B60205`) que se auto-crea si no existe. Los suscriptores al repositorio reciben notificacion por email automaticamente via GitHub - sin integraciones externas, sin webhooks adicionales, sin credenciales extra. La feature queda verificada con 5 Issues reales generados por PRs de demo (Issues #60, #64, #66, #67, #68) cubriendo los 5 tipos de amenaza del Shooting Range: credenciales AWS, SQL injection, backdoor de desarrollador, secrets PHP y typosquatting de cadena de suministro.
+  - Fichero: `.github/workflows/opsguard.yml`
+  - Rama: `feat/security-alert-issues` → `main` (PR #58)
+  - Permiso añadido: `issues: write` al job `security-scan`
+  - Verificacion: 5 Issues auto-creados (PR #59, #61, #62, #63, #65 bloqueados)
+
+---
+
 ## [1.0.1] - 2026-03-01 · Polish & Hardening
 
 ### Added

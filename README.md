@@ -14,6 +14,7 @@ OpsGuard es una herramienta de Ingeniería de Plataforma que actúa como **puert
 - **🧠 Semantic Logic Check:** Detecta vulnerabilidades complejas como Inyecciones SQL o Backdoors lógicos que el Regex ignora.
 - **⚡ Zero-Latency Focus:** Filtrado inteligente para no bloquear el pipeline innecesariamente.
 - **📝 Automated Audit Logs:** Generación de evidencias forenses en cada ejecución.
+- **🔔 Automatic Security Alerts:** Cuando OpsGuard bloquea un PR, crea automáticamente un GitHub Issue con etiqueta `security-block` — los responsables reciben notificación por email via GitHub sin configuración adicional.
 
 ---
 
@@ -265,6 +266,8 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `1.0.2` | Operational Alerting Sprint - GitHub Issue automático con etiqueta `security-block` al bloquear un PR |
+| `1.0.1` | Polish & Hardening - graficas Mermaid en ADR-0003, normalizacion tipografica, `.gitignore` reforzado |
 | `1.0.0` | Prompt Engineering Documentation Sprint - `prompts/README.md`, evolución y decisiones de prompt |
 | `0.9.0` | GitHub Action Marketplace Sprint - `action.yml`, release workflow, guía integración 5 min |
 | `0.8.0` | AI Model Benchmark Sprint - comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
@@ -322,6 +325,8 @@ jobs:
 ```
 
 Abre un PR y OpsGuard bloqueará automáticamente cualquier cambio que contenga secretos, vulnerabilidades lógicas o ataques de supply-chain.
+
+> **Alertas automáticas:** Si quieres que OpsGuard cree un GitHub Issue cuando bloquea un PR (con notificación por email a los responsables), añade `issues: write` a los permisos y el step de creación de Issue. Ver el workflow completo de OpsGuard en [`.github/workflows/opsguard.yml`](.github/workflows/opsguard.yml) como referencia.
 
 ### Configuración avanzada
 
