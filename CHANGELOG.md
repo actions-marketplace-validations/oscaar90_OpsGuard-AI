@@ -6,6 +6,28 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.5.0] — 2026-03-01 · Code Quality Sprint
+
+> Ciclo de mejora de implementación iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Implementación del Código** obtuvo un 8.5/10 (gap de −1.5 pts) por tres decisiones de implementación incompletas: el `SYSTEM_PROMPT` hardcodeado en lugar de externalizado, la falta de documentación formal de la deuda técnica del truncado de diff, y la ausencia de auditoría automática de dependencias en CI.
+
+### Added
+
+- **[PR #50]** `SYSTEM_PROMPT` externalizado a `prompts/system_prompt.txt` — El prompt del sistema de Gate 2 estaba hardcodeado como string en `src/ai.py`. Se mueve al fichero `prompts/system_prompt.txt` y se carga en tiempo de importación con `Path(__file__).parent.parent / "prompts" / "system_prompt.txt"`. A partir de ahora el prompt es un artefacto de configuración versionado independientemente del código Python: puede revisarse, modificarse y auditarse en un PR como texto limpio, sin tocar `src/ai.py`.
+  - Ficheros: `src/ai.py`, `prompts/system_prompt.txt`
+  - Rama: `feat/code-quality-improvements` → `main`
+
+- **[PR #50]** ADR-0005: Estrategia de Truncado de Diff — Documenta formalmente la decisión de `MAX_DIFF_CHARS = 30_000` que hasta ahora existía como constante sin contexto. El ADR recoge: el problema (coste y calidad en diffs grandes), la solución actual (truncado simple por longitud), las alternativas descartadas (chunking, priorización por hunk, resumen previo) y la deuda técnica reconocida para v2 (priorización por hunk). Es el ADR que faltaba para completar la cobertura documental de las decisiones arquitectónicas del sistema.
+  - Fichero: `docs/adr/0005-diff-truncation-strategy.md`
+  - Rama: `feat/code-quality-improvements` → `main`
+
+- **[PR #50]** Auditoría automática de dependencias en el job `lint` — Se añaden dos pasos al job de Code Quality del workflow CI/CD: `poetry check` (valida que `pyproject.toml` es coherente con `poetry.lock`) y `poetry run pip-audit --progress-spinner off` (detecta CVEs conocidos en el entorno instalado). Durante la implementación, `pip-audit` detectó dos vulnerabilidades reales que han sido corregidas en este mismo PR:
+  - `black 23.12.1` → `24.10.0` (PYSEC-2024-48)
+  - `protobuf 5.29.5` → `7.34.0` (CVE-2026-0994, dependencia transitiva vía `openai`/`google-generativeai`; se fija con `protobuf = ">=5.29.6"` en `pyproject.toml`)
+  - Ficheros: `.github/workflows/opsguard.yml`, `pyproject.toml`, `poetry.lock`
+  - Rama: `feat/code-quality-improvements` → `main`
+
+---
+
 ## [0.4.0] — 2026-03-01 · Testing Coverage Sprint
 
 > Ciclo de mejora de calidad iniciado tras el análisis de brechas del informe `docs/PLAN_MEJORA_TFM_BraisMoure.md`. El criterio **Testing y Calidad** obtuvo un 8.0/10 (gap de −2.0 pts) por tres carencias concretas: ausencia de tests para `src/ai.py`, inexistencia de un gate de cobertura mínima en CI y falta de tests de integración end-to-end. Este sprint las cierra.

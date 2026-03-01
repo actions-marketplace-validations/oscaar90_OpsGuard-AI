@@ -44,6 +44,12 @@ jobs:
       - name: Check formatting (black)
         run: poetry run black --check src/ tests/
 
+      - name: Validate project structure (poetry check)
+        run: poetry check
+
+      - name: Audit dependencies for known CVEs (pip-audit)
+        run: poetry run pip-audit --progress-spinner off
+
   # ─────────────────────────────────────────────────────────────────────────────
   # Job 2 — Unit Tests: matrix across all supported Python versions
   # ─────────────────────────────────────────────────────────────────────────────

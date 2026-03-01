@@ -1,4 +1,5 @@
 """Main CLI entry point for OpsGuard-AI."""
+
 import sys
 import os
 import typer
