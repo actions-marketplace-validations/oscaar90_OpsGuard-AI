@@ -83,7 +83,7 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Run Test Suite
-        run: poetry run pytest tests/ -v
+        run: poetry run pytest tests/ -v --cov=src --cov-report=term-missing --cov-fail-under=80
 
   # ─────────────────────────────────────────────────────────────────────────────
   # Job 3 — Security Scan: runs only when lint + tests pass
