@@ -265,6 +265,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `0.8.0` | AI Model Benchmark Sprint — comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
 | `0.7.0` | Competitive Positioning Sprint — comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |
 | `0.6.0` | Architecture Documentation Sprint — ADR-0004 fail-closed, contratos de módulo |
 | `0.5.0` | Code Quality Sprint — prompt externalizado, ADR-0005, auditoría CVE en CI |

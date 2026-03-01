@@ -6,6 +6,18 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.8.0] — 2026-03-01 · AI Model Benchmark Sprint
+
+> Ciclo de mejora de integración de IA iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Integración de Inteligencia Artificial** obtuvo un 9.5/10 (gap de −0.5 pts) porque ADR-0003 declaraba como objetivo una comparativa empírica entre modelos que nunca se materializó en datos reales. Este sprint cierra esa deuda: se ejecuta el benchmark sobre los 4 fixtures de Gate 2 y se documentan los resultados con métricas de detección, latencia y coste.
+
+### Added
+
+- **[PR #53]** Resultados del benchmark de modelos en `docs/adr/0003-telemetria-y-finops.md` — Se añade la sección "Resultados del Benchmark de Modelos" que materializa la comparativa empírica prometida en ADR-0003. El benchmark ejecuta los 4 fixtures del Shooting Range (`legacy_login.py`, `auth_middleware.py`, `config.php`, `supply_chain_attack.py`) contra tres modelos disponibles via OpenRouter: `google/gemini-2.0-flash-001`, `anthropic/claude-haiku-4-5` y `openai/gpt-4o-mini`. Los resultados cubren: veredicto, risk score, latencia media (mediana de 3 ejecuciones), tokens consumidos y coste por llamada. La conclusión consolida `gemini-2.0-flash-001` como modelo por defecto con datos cuantitativos: detección 4/4, latencia media 2 848 ms y coste estimado de $0.24/mes a 1 000 PRs/mes — 9× más barato que Claude Haiku con paridad de detección.
+  - Fichero: `docs/adr/0003-telemetria-y-finops.md`
+  - Rama: `feat/model-benchmark` → `main`
+
+---
+
 ## [0.7.0] — 2026-03-01 · Competitive Positioning Sprint
 
 > Ciclo de mejora de propuesta de valor iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Concepto y Propuesta de Valor** obtuvo un 9.5/10 (gap de −0.5 pts) porque la narrativa de producto no contextualizaba OpsGuard frente al ecosistema de herramientas existentes (Semgrep, Gitleaks, Trivy). Este sprint añade la comparativa que Brais pedía para redondear la propuesta diferencial.
