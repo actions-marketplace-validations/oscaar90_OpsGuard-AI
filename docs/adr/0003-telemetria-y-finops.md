@@ -148,6 +148,30 @@ efficiency_ratio = output_tokens / input_tokens
 
 > \* Estimación basada en 1 000 PRs/mes (50 PRs/día × 20 días laborables). Asume que el 60% de los PRs supera Gate 1 y llega a Gate 2.
 
+### Visualización comparativa
+
+#### Coste mensual estimado (1 000 PRs/mes)
+
+```mermaid
+xychart-beta
+    title "Coste mensual estimado — 1 000 PRs/mes (USD)"
+    x-axis ["Gemini Flash 2.0", "GPT-4o-mini", "Claude Haiku 4.5"]
+    y-axis "USD / mes" 0 --> 2.5
+    bar [0.24, 0.36, 2.28]
+```
+
+#### Latencia media por análisis
+
+```mermaid
+xychart-beta
+    title "Latencia media por análisis (ms) — menor es mejor"
+    x-axis ["Gemini Flash 2.0", "GPT-4o-mini", "Claude Haiku 4.5"]
+    y-axis "ms" 0 --> 4000
+    bar [2848, 3528, 2026]
+```
+
+> La latencia de Claude Haiku es la mejor (2 026 ms), pero su coste mensual es **9.5× superior** al de Gemini Flash ($2.28 vs $0.24). GPT-4o-mini no tiene ventaja en ninguno de los dos ejes.
+
 ### Conclusión
 
 Los tres modelos detectan correctamente las 4 clases de vulnerabilidad semántica incluidas en el Shooting Range. La diferencia determinante es el **coste**: `claude-haiku-4-5` es el más rápido (latencia media 2 026 ms) pero es 9× más caro que Gemini Flash. `gpt-4o-mini` ocupa un punto intermedio sin ventaja clara ni en latencia ni en precisión.
