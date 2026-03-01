@@ -1,6 +1,6 @@
 # CHANGELOG
 
-Registro de cambios del proyecto **OpsGuard-AI** siguiendo el formato [Keep a Changelog](https://keepachangelog.com/es/1.0.0/) y la especificación [Semantic Versioning](https://semver.org/).
+Registro de cambios del proyecto **OpsGuard-AI** siguiendo el formato [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y la especificación [Semantic Versioning](https://semver.org/).
 
 Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad completa del proceso de ingeniería.
 
