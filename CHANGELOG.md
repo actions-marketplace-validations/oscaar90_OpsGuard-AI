@@ -6,6 +6,19 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.1] - 2026-03-01 · Polish & Hardening
+
+### Added
+
+- **[tag v1.0.1]** `.gitignore` reforzado - Añade reglas para prevenir la subida accidental de artefactos internos: informes de evaluación y documentos de trabajo (`*Brais*.md`, `*oscar*.md`), PDFs (`*.pdf`), artefactos de cobertura (`.coverage`, `htmlcov/`) y ficheros temporales de editor (`*.kate-swp`, `*.swp`).
+
+### Changed
+
+- **[tag v1.0.1]** Gráficas comparativas de modelos en `docs/adr/0003-telemetria-y-finops.md` - Dos diagramas `xychart-beta` de Mermaid que se renderizan nativamente en GitHub: coste mensual estimado (1 000 PRs/mes) y latencia media por análisis. Hacen visualmente obvia la ventaja de Gemini Flash 2.0 frente a Claude Haiku 4.5 (9.5x más barato) y GPT-4o-mini (mejor latencia y menor coste).
+- **[tag v1.0.1]** Sustitución de em dash (`-`) por guion normal (`-`) en 16 ficheros del proyecto - Normalización tipográfica en ficheros Markdown, Python y YAML.
+
+---
+
 ## [1.0.0] - 2026-03-01 · Prompt Engineering Documentation Sprint
 
 > Ciclo de mejora de documentación iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Documentación** obtuvo un 9.0/10 (gap de −1.0 pt) con una observación concreta: "La documentación del directorio `prompts/` brilla por su ausencia. El sistema de prompts es una parte crítica de la inteligencia del sistema." Este sprint cierra esa brecha y completa el ciclo de mejora de calidad del TFM.
