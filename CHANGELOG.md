@@ -6,6 +6,45 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.4.0] — 2026-03-01 · Testing Coverage Sprint
+
+> Ciclo de mejora de calidad iniciado tras el análisis de brechas del informe `docs/PLAN_MEJORA_TFM_BraisMoure.md`. El criterio **Testing y Calidad** obtuvo un 8.0/10 (gap de −2.0 pts) por tres carencias concretas: ausencia de tests para `src/ai.py`, inexistencia de un gate de cobertura mínima en CI y falta de tests de integración end-to-end. Este sprint las cierra.
+
+### Added
+
+- **[PR #49]** Suite de tests unitarios para el motor de Gate 2 (`AIEngine`) — 13 tests en 5 clases que cubren la totalidad de `src/ai.py`, alcanzando **100% de cobertura** en el módulo más crítico del sistema:
+  - `TestAIEngineInit` — inicialización correcta y fallo explícito sin `OPENROUTER_API_KEY`.
+  - `TestAnalyzeDiffApprove` / `TestAnalyzeDiffBlock` — happy paths con veredictos APPROVE y BLOCK; validación del formato de respuesta y telemetría verbose.
+  - `TestAnalyzeDiffFailClosed` — **validación de la política fail-closed**: timeout de API, JSON malformado, respuesta de tipo lista inesperado y dict sin la clave `verdict` retornan siempre `risk_score: 10` sin propagar la excepción. Este grupo de tests es la evidencia formal de que la política de seguridad más importante del sistema funciona como está documentada en ADR-0001.
+  - `TestDiffTruncation` — verifica que diffs superiores a `MAX_DIFF_CHARS = 30_000` se truncan antes de enviarse al LLM y que diffs cortos se envían íntegros.
+  - `TestTelemetryModes` — modos `silent` y `summary` no rompen el flujo normal.
+  - Todos los tests usan `pytest-mock` (sin llamadas reales a la API de OpenRouter).
+  - Fichero: `tests/test_ai.py`
+  - Rama: `feat/testing-ai-engine-coverage` → `main`
+
+- **[PR #49]** Tests de integración end-to-end del pipeline completo — 4 tests en `TestEndToEnd` que verifican el contrato público de la herramienta (exit codes) usando `typer.testing.CliRunner` con `GitManager` y `AIEngine` mockeados:
+  - Gate 1 bloquea credenciales AWS del fixture real → exit code `1`.
+  - Gate 2 bloquea SQL injection via mock (Gate 1 lo deja pasar) → exit code `1`.
+  - Diff limpio pasa ambos gates → exit code `0`.
+  - Pipeline sin `OPENROUTER_API_KEY` termina sin excepción no controlada → exit code `0`.
+  - Fichero: `tests/test_e2e.py`
+  - Rama: `feat/testing-ai-engine-coverage` → `main`
+
+- **[PR #49]** Gate de cobertura mínima del 80% en CI — El job `test` del workflow pasa de `pytest tests/ -v` a `pytest tests/ -v --cov=src --cov-report=term-missing --cov-fail-under=80`. A partir de ahora, cualquier PR que reduzca la cobertura global de `src/` por debajo del 80% bloquea el merge automáticamente. Resultado en el primer run con el gate activo: **83.64% de cobertura total**, `src/ai.py` al **100%**.
+  - Fichero: `.github/workflows/opsguard.yml`
+  - Rama: `feat/testing-ai-engine-coverage` → `main`
+
+- **[PR #49]** Dependencias de desarrollo `pytest-cov ^4.1.0` y `pytest-mock ^3.12.0` añadidas a `pyproject.toml` — `pytest-cov` provee el informe de cobertura integrado con pytest; `pytest-mock` expone el fixture `mocker` que permite hacer `mocker.patch.object()` sin strings frágiles de path.
+  - Fichero: `pyproject.toml`, `poetry.lock`
+  - Rama: `feat/testing-ai-engine-coverage` → `main`
+
+### Chore
+
+- **[PR #49]** Informe de plan de mejoras `docs/PLAN_MEJORA_TFM_BraisMoure.md` — documento complementario a la evaluación original (`docs/EVALUACION_TFM_BraisMoure.md`) que prioriza los 10 criterios por gap descendente e incluye acciones concretas, módulos del máster asociados y esfuerzo estimado por mejora. Generado como hoja de ruta para la evolución post-evaluación del proyecto.
+  - Fichero: `docs/PLAN_MEJORA_TFM_BraisMoure.md`
+
+---
+
 ## [0.3.0] — 2026-02-21 · Quality Audit Sprint
 
 > Ciclo de mejora continua iniciado tras un análisis técnico exhaustivo del proyecto (`FEEDBACK.md`). Las correcciones cubren dos categorías: **blockers de runtime** que impedían la ejecución en entornos limpios, y **deuda técnica** que comprometía la configurabilidad y el principio de mínimo privilegio.
