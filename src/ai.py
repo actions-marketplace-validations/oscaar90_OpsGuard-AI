@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from pathlib import Path
 from openai import OpenAI
 from typing import Dict, Any
 from dotenv import load_dotenv
@@ -35,36 +36,10 @@ MAX_DIFF_CHARS = 30_000
 TELEMETRY_MODE = os.getenv("OPSGUARD_TELEMETRY_MODE", "verbose").lower()
 
 # SCHEMA ENFORCEMENT & CONTEXT INJECTION
-SYSTEM_PROMPT = """
-ROLE: You are OpsGuard-AI, a Senior Application Security Engineer audit bot.
-CONTEXT: You are auditing the source code of "OpsGuard", a DevSecOps CLI tool.
-
-TASK: Analyze the provided Git Diff for SECURITY VULNERABILITIES.
-
-CRITICAL CONTEXTUAL RULES (To prevent False Positives):
-1. **Tooling Logic is SAFE**: Code that implements file filtering (e.g., parsing `.opsguardignore`, using `pathspec`), git operations, or config loading is INTENDED FUNCTIONALITY. Do NOT flag this as a "Security Bypass" or "Malicious Filtering".
-2. **File Paths are NOT PII**: Functions that list or log filenames (like `get_staged_files`) do not constitute a data leak in this context. Ignore risks related to "exposing file paths".
-3. **Focus on Real Threats**: Only block if you see:
-    - Hardcoded Secrets (API Keys, Passwords).
-    - Remote Code Execution (RCE) via unsafe input (e.g., `subprocess.run(shell=True)` with user input).
-    - SQL Injection or XSS (if reviewing web code).
-    - Insecure defaults in cryptography.
-
-OUTPUT FORMAT (Strict JSON):
-{
-    "verdict": "APPROVE" | "BLOCK",
-    "risk_score": <integer 0-10>,
-    "explanation": "Brief executive summary of the security status.",
-    "findings": [
-        {
-            "file": "path/to/file.ext",
-            "line": "approximate line number or code snippet",
-            "severity": "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
-            "issue": "Technical description of the vulnerability"
-        }
-    ]
-}
-"""
+# Loaded from prompts/system_prompt.txt — edit the file to update prompt behaviour
+# without touching Python source code (versioned independently).
+_PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "system_prompt.txt"
+SYSTEM_PROMPT = _PROMPT_PATH.read_text(encoding="utf-8")
 
 
 class AIEngine:
