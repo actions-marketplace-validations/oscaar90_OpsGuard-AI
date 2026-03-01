@@ -6,6 +6,18 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.7.0] — 2026-03-01 · Competitive Positioning Sprint
+
+> Ciclo de mejora de propuesta de valor iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Concepto y Propuesta de Valor** obtuvo un 9.5/10 (gap de −0.5 pts) porque la narrativa de producto no contextualizaba OpsGuard frente al ecosistema de herramientas existentes (Semgrep, Gitleaks, Trivy). Este sprint añade la comparativa que Brais pedía para redondear la propuesta diferencial.
+
+### Added
+
+- **[PR #52]** Sección comparativa "¿Por qué OpsGuard?" en `README.md` — Tabla de capacidades frente a Gitleaks, Semgrep y Trivy, con análisis del nicho específico de OpsGuard: detección semántica de lógica compleja (SQL Injection contextual, backdoors lógicos, typosquatting de dominios) que los escáneres estáticos no pueden cubrir. Incluye el patrón de uso recomendado (OpsGuard + Trivy como herramientas complementarias, no competidoras) y la diferenciación clave de privacidad (Gate 1 garantiza que los secretos nunca llegan a la API externa, ADR-0001).
+  - Fichero: `README.md`
+  - Rama: `docs/competitive-analysis` → `main`
+
+---
+
 ## [0.6.0] — 2026-03-01 · Architecture Documentation Sprint
 
 > Ciclo de mejora de arquitectura iniciado a partir del criterio **Arquitectura y Diseño Técnico** (9.0/10, gap −1.0 pt). La evaluación señalaba un único punto ciego: la política fail-closed de Gate 2 existía en el código pero no estaba documentada como decisión consciente. Este sprint lo cierra con el ADR que faltaba y completa los contratos de módulo de `src/ai.py`.
