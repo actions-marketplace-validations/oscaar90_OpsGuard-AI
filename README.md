@@ -265,6 +265,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `1.0.0` | Prompt Engineering Documentation Sprint — `prompts/README.md`, evolución y decisiones de prompt |
 | `0.9.0` | GitHub Action Marketplace Sprint — `action.yml`, release workflow, guía integración 5 min |
 | `0.8.0` | AI Model Benchmark Sprint — comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
 | `0.7.0` | Competitive Positioning Sprint — comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |

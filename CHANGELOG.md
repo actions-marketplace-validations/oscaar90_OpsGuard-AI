@@ -6,6 +6,18 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.0] — 2026-03-01 · Prompt Engineering Documentation Sprint
+
+> Ciclo de mejora de documentación iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Documentación** obtuvo un 9.0/10 (gap de −1.0 pt) con una observación concreta: "La documentación del directorio `prompts/` brilla por su ausencia. El sistema de prompts es una parte crítica de la inteligencia del sistema." Este sprint cierra esa brecha y completa el ciclo de mejora de calidad del TFM.
+
+### Added
+
+- **[PR #55]** `prompts/README.md` — Documentación completa del directorio de prompts. Cubre dos tipos de artefactos: el prompt de producción de Gate 2 (`system_prompt.txt`) y los prompts de desarrollo (01–06). Para `system_prompt.txt` documenta: anatomía del prompt (ROLE → CONTEXT → TASK → RULES → OUTPUT FORMAT), el origen de cada CRITICAL CONTEXTUAL RULE (falsos positivos detectados en dog-fooding), las decisiones de prompt engineering con alternativas descartadas (idioma, temperatura, rol, schema, reglas contextuales), y la evolución del prompt a través de 3 versiones. Para los prompts de desarrollo documenta el inventario completo (qué módulo construyó cada prompt, qué rol se asignó al LLM) y la relación entre prompts y ADRs como artefactos complementarios del mismo proceso de toma de decisiones. Materializa el módulo "Flujo de Desarrollo con IA" del plan de estudios.
+  - Fichero: `prompts/README.md`
+  - Rama: `docs/prompts-documentation` → `main`
+
+---
+
 ## [0.9.0] — 2026-03-01 · GitHub Action Marketplace Sprint
 
 > Ciclo de mejora de originalidad e impacto iniciado tras el análisis de brechas del informe de evaluación TFM. Los criterios **Originalidad e Impacto Potencial** (9.0/10, gap −1.0) y **CI/CD y DevOps** (9.5/10, gap −0.5) señalaban la misma deuda: OpsGuard existía como proyecto interno pero no como producto reutilizable. Este sprint completa la última milla: publica OpsGuard como GitHub Action disponible en el Marketplace y añade el workflow de release automático que convierte cada tag semántico en un artefacto versionado.
