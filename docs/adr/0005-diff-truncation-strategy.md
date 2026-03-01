@@ -1,7 +1,7 @@
 # ADR 0005: Estrategia de Truncado de Diff
 
 ## Estado
-Aceptado — Revisión pendiente en v1.0
+Aceptado - Revisión pendiente en v1.0
 
 ## Metadata
 
@@ -50,7 +50,7 @@ Si el diff supera el límite, se descarta la parte final y se emite una adverten
 
 ### Negativas
 - **Cobertura parcial en PRs grandes**: las vulnerabilidades en la segunda mitad de un diff grande quedan fuera del análisis de Gate 2. Gate 1 (regex) sigue analizando el diff completo, por lo que los secretos estructurales siguen detectándose.
-- **Descarte silencioso**: el truncado no es un fallo explícito — el pipeline continúa con análisis parcial. El aviso en consola es la única señal para el desarrollador.
+- **Descarte silencioso**: el truncado no es un fallo explícito - el pipeline continúa con análisis parcial. El aviso en consola es la única señal para el desarrollador.
 
 ### Deuda técnica documentada
 

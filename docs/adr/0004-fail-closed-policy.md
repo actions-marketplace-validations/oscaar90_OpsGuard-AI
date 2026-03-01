@@ -54,12 +54,12 @@ En sistemas de seguridad, la disponibilidad es secundaria a la integridad. Esta 
 
 ### Positivas
 - **Seguridad garantizada ante fallos**: ningún PR puede pasar silenciosamente por un error técnico del motor de IA.
-- **Comportamiento predecible**: los equipos saben que ante cualquier error del sistema, el pipeline se detiene — no pasa nada de forma inadvertida.
+- **Comportamiento predecible**: los equipos saben que ante cualquier error del sistema, el pipeline se detiene - no pasa nada de forma inadvertida.
 - **Sin superficie de ataque por degradación**: un atacante no puede provocar intencionadamente un fallo del motor (p.ej. enviando un diff que consuma todo el contexto) para que el sistema apruebe código malicioso por omisión.
 
 ### Negativas
 - **Impacto en disponibilidad**: una caída de OpenRouter, un agotamiento de cuota o una expiración de la API key bloqueará **todos** los PRs del equipo hasta que se resuelva el problema operacional.
-- **Falsos bloqueos no auditables**: el bloqueo por fallo de motor no genera findings técnicos — solo un mensaje de error interno. El equipo necesita monitorización externa (alertas de CI, dashboards) para distinguir un bloqueo por amenaza real de un bloqueo por fallo de infraestructura.
+- **Falsos bloqueos no auditables**: el bloqueo por fallo de motor no genera findings técnicos - solo un mensaje de error interno. El equipo necesita monitorización externa (alertas de CI, dashboards) para distinguir un bloqueo por amenaza real de un bloqueo por fallo de infraestructura.
 
 ## Mitigaciones para producción
 

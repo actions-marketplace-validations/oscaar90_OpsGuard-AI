@@ -67,7 +67,7 @@ def scan(
 
         if not target_files:
             print("✨ No relevant changes detected (filtered by .opsguardignore).")
-            # typer.Exit is intentional — let it propagate
+            # typer.Exit is intentional - let it propagate
             raise typer.Exit(code=0)
 
         diff = manager.get_diff(files=target_files)

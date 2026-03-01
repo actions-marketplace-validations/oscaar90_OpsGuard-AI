@@ -9,7 +9,7 @@ on:
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
-  # Job 1 — Code Quality: formatting check (black)
+  # Job 1 - Code Quality: formatting check (black)
   # ─────────────────────────────────────────────────────────────────────────────
   lint:
     name: 🔍 Code Quality
@@ -51,7 +51,7 @@ jobs:
         run: poetry run pip-audit --progress-spinner off
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # Job 2 — Unit Tests: matrix across all supported Python versions
+  # Job 2 - Unit Tests: matrix across all supported Python versions
   # ─────────────────────────────────────────────────────────────────────────────
   test:
     name: 🧪 Tests (Python ${{ matrix.python-version }})
@@ -92,7 +92,7 @@ jobs:
         run: poetry run pytest tests/ -v --cov=src --cov-report=term-missing --cov-fail-under=80
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # Job 3 — Security Scan: runs only when lint + tests pass
+  # Job 3 - Security Scan: runs only when lint + tests pass
   # ─────────────────────────────────────────────────────────────────────────────
   security-scan:
     name: 🕵️‍♂️ Semantic Security Scan

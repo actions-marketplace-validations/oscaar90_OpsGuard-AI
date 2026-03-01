@@ -38,7 +38,7 @@ El ecosistema de seguridad en pipelines ya cuenta con herramientas maduras. OpsG
 - **Gitleaks** es la mejor herramienta para detección de secretos por patrones. Gate 1 de OpsGuard cubre exactamente ese caso, pero Gate 2 añade la capa que Gitleaks no tiene: razonamiento contextual.
 - **Semgrep** detecta vulnerabilidades con reglas escritas por humanos. Es potente pero frágil ante variaciones de código no contempladas en las reglas. No tiene razonamiento semántico real.
 - **Trivy** escanea dependencias, imágenes de contenedor e IaC. Su dominio es distinto: vulnerabilidades conocidas (CVEs), no lógica de código nuevo.
-- **OpsGuard** es la única herramienta de este listado que puede detectar un ataque de typosquatting como `ghrc.io` vs `ghcr.io` — un dominio sintácticamente válido que ningún escáner estático identificaría como amenaza.
+- **OpsGuard** es la única herramienta de este listado que puede detectar un ataque de typosquatting como `ghrc.io` vs `ghcr.io` - un dominio sintácticamente válido que ningún escáner estático identificaría como amenaza.
 
 > 💡 **Patrón de uso recomendado:** OpsGuard y Trivy son complementarios, no competidores. Trivy audita dependencias; OpsGuard audita la lógica del código nuevo que entra por PR.
 
@@ -82,7 +82,7 @@ OpsGuard-AI/
 └── README.md             # Punto de entrada de documentación
 ```
 
-> **Nota sobre `web/`:** El dashboard web es una interfaz de monitorización auxiliar (Next.js / Vercel) que consume la API de GitHub Actions para visualizar en tiempo real el historial de ejecuciones de OpsGuard: KPIs de bloqueos/aprobaciones, tasa de bloqueo y feed de actividad filtrable por estado (`ALL` / `BLOCKED` / `APPROVED`). **La ingeniería central del proyecto reside exclusivamente en `src/`** — el motor de análisis, la integración con el LLM, el pipeline CI/CD y la suite de tests. El directorio `web/` queda fuera del alcance de la evaluación técnica del TFM.
+> **Nota sobre `web/`:** El dashboard web es una interfaz de monitorización auxiliar (Next.js / Vercel) que consume la API de GitHub Actions para visualizar en tiempo real el historial de ejecuciones de OpsGuard: KPIs de bloqueos/aprobaciones, tasa de bloqueo y feed de actividad filtrable por estado (`ALL` / `BLOCKED` / `APPROVED`). **La ingeniería central del proyecto reside exclusivamente en `src/`** - el motor de análisis, la integración con el LLM, el pipeline CI/CD y la suite de tests. El directorio `web/` queda fuera del alcance de la evaluación técnica del TFM.
 
 ---
 
@@ -122,7 +122,7 @@ El sistema es configurable mediante variables de entorno sin modificar código:
 
 | Variable | Descripción | Por defecto |
 |----------|-------------|-------------|
-| `OPENROUTER_API_KEY` | API Key de OpenRouter (**obligatoria**) | — |
+| `OPENROUTER_API_KEY` | API Key de OpenRouter (**obligatoria**) | - |
 | `OPSGUARD_MODEL` | Modelo LLM a usar en Gate 2 | `google/gemini-2.0-flash-001` |
 | `OPSGUARD_RISK_THRESHOLD` | Puntuación mínima para bloquear | `7` |
 | `OPSGUARD_TELEMETRY_MODE` | Verbosidad de telemetría FinOps (`verbose` / `summary` / `silent`) | `verbose` |
@@ -143,7 +143,7 @@ Valida el comportamiento del **Gate 1 (Regex)**: qué patrones bloquea, qué dej
 Para ver el bloqueo de CI/CD en tiempo real, copie un fixture a otra ruta y abra una Pull Request:
 
 ```bash
-# Ejemplo: credenciales AWS (bloqueado por Gate 1 — Regex)
+# Ejemplo: credenciales AWS (bloqueado por Gate 1 - Regex)
 cp tests/fixtures/vulnerable_app/aws_creds.env src/aws_creds.env
 git checkout -b demo/shooting-range
 git add src/aws_creds.env && git commit -m "test: add config"
@@ -157,11 +157,11 @@ Consulte [`tests/fixtures/README.md`](tests/fixtures/README.md) para la guía co
 
 | Fichero | Vulnerabilidad | Gate que lo detecta |
 |---------|---------------|---------------------|
-| `aws_creds.env` | AWS Access Key (`AKIA…`) | Gate 1 — Regex |
-| `legacy_login.py` | SQL Injection | Gate 2 — IA |
-| `auth_middleware.py` | Developer Backdoor | Gate 2 — IA |
-| `config.php` | Password & API Key hardcodeadas | Gate 2 — IA |
-| `supply_chain_attack.py` | Typosquatting `ghrc.io` → `ghcr.io` | Gate 2 — IA |
+| `aws_creds.env` | AWS Access Key (`AKIA…`) | Gate 1 - Regex |
+| `legacy_login.py` | SQL Injection | Gate 2 - IA |
+| `auth_middleware.py` | Developer Backdoor | Gate 2 - IA |
+| `config.php` | Password & API Key hardcodeadas | Gate 2 - IA |
+| `supply_chain_attack.py` | Typosquatting `ghrc.io` → `ghcr.io` | Gate 2 - IA |
 
 ---
 
@@ -187,7 +187,7 @@ graph TD
     Block & Pass --> Report["CI/CD Report (Console/GitHub)"]
 ```
 
-### Sequence Diagram — Runtime Actors
+### Sequence Diagram - Runtime Actors
 
 ```mermaid
 sequenceDiagram
@@ -223,7 +223,7 @@ sequenceDiagram
 ## 🔬 Caso Real: Detección de Supply-Chain Attack (Typosquatting `ghrc.io`)
 
 ### Contexto del Incidente
-En febrero de 2025 se descubrió que el dominio **`ghrc.io`** — una transposición deliberada de **`ghcr.io`** (GitHub Container Registry) — estaba siendo utilizado como vector de ataque. Este dominio de typosquatting, reportado a través de un programa de Bug Bounty, clonaba la interfaz del registro oficial de contenedores de GitHub para interceptar imágenes Docker.
+En febrero de 2025 se descubrió que el dominio **`ghrc.io`** - una transposición deliberada de **`ghcr.io`** (GitHub Container Registry) - estaba siendo utilizado como vector de ataque. Este dominio de typosquatting, reportado a través de un programa de Bug Bounty, clonaba la interfaz del registro oficial de contenedores de GitHub para interceptar imágenes Docker.
 
 Este tipo de ataques de **Supply-Chain** ha afectado masivamente al ecosistema de GitHub, con cientos de miles de intentos documentados de envenenamiento de paquetes y registros. Un desarrollador que escriba `ghrc.io` en vez de `ghcr.io` en un `Dockerfile` o script CI podría:
 - **Enviar imágenes corporativas** a un registro controlado por atacantes.
@@ -235,8 +235,8 @@ Hemos incluido un fixture de prueba (`tests/fixtures/vulnerable_app/supply_chain
 
 | Motor | Resultado | Detalle |
 | :--- | :---: | :--- |
-| **Gate 1 — Regex** | ✅ PASS | No existe patrón determinista para typosquatting de dominios |
-| **Gate 2 — IA Semántica** | ⛔ **BLOCK** | `risk_score: 7/10`, Severity: `HIGH`. Identificó correctamente `ghrc.io` como typosquatting de `ghcr.io` |
+| **Gate 1 - Regex** | ✅ PASS | No existe patrón determinista para typosquatting de dominios |
+| **Gate 2 - IA Semántica** | ⛔ **BLOCK** | `risk_score: 7/10`, Severity: `HIGH`. Identificó correctamente `ghrc.io` como typosquatting de `ghcr.io` |
 
 > **💡 Valor diferencial:** Este caso demuestra por qué el análisis semántico por IA es un complemento necesario al Regex. Un escáner estático convencional (SAST) **nunca** detectaría este ataque porque `ghrc.io` es un dominio válido sintácticamente. Solo un motor con **razonamiento contextual** puede identificar la anomalía.
 
@@ -265,16 +265,16 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
-| `1.0.0` | Prompt Engineering Documentation Sprint — `prompts/README.md`, evolución y decisiones de prompt |
-| `0.9.0` | GitHub Action Marketplace Sprint — `action.yml`, release workflow, guía integración 5 min |
-| `0.8.0` | AI Model Benchmark Sprint — comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
-| `0.7.0` | Competitive Positioning Sprint — comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |
-| `0.6.0` | Architecture Documentation Sprint — ADR-0004 fail-closed, contratos de módulo |
-| `0.5.0` | Code Quality Sprint — prompt externalizado, ADR-0005, auditoría CVE en CI |
-| `0.4.0` | Testing Coverage Sprint — tests AIEngine, E2E pipeline, gate cobertura 80% |
-| `0.3.0` | Quality Audit Sprint — corrección de blockers, tests unitarios, telemetría ADR-0003, principio de mínimo privilegio |
+| `1.0.0` | Prompt Engineering Documentation Sprint - `prompts/README.md`, evolución y decisiones de prompt |
+| `0.9.0` | GitHub Action Marketplace Sprint - `action.yml`, release workflow, guía integración 5 min |
+| `0.8.0` | AI Model Benchmark Sprint - comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
+| `0.7.0` | Competitive Positioning Sprint - comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |
+| `0.6.0` | Architecture Documentation Sprint - ADR-0004 fail-closed, contratos de módulo |
+| `0.5.0` | Code Quality Sprint - prompt externalizado, ADR-0005, auditoría CVE en CI |
+| `0.4.0` | Testing Coverage Sprint - tests AIEngine, E2E pipeline, gate cobertura 80% |
+| `0.3.0` | Quality Audit Sprint - corrección de blockers, tests unitarios, telemetría ADR-0003, principio de mínimo privilegio |
 | `0.2.0` | Supply-Chain Detection & Action Alignment |
-| `0.1.0` | TFM Final Delivery — versión de entrega académica |
+| `0.1.0` | TFM Final Delivery - versión de entrega académica |
 
 ---
 
@@ -282,7 +282,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 OpsGuard está disponible como **GitHub Action** reutilizable. Cualquier equipo puede añadirlo a su pipeline sin clonar el repositorio ni gestionar dependencias:
 
-### Paso 1 — Añade el secreto
+### Paso 1 - Añade el secreto
 
 En tu repositorio: **Settings → Secrets and variables → Actions → New repository secret**
 
@@ -291,7 +291,7 @@ Name:  OPENROUTER_API_KEY
 Value: <tu api key de openrouter.ai>
 ```
 
-### Paso 2 — Crea el workflow
+### Paso 2 - Crea el workflow
 
 Crea el fichero `.github/workflows/security.yml` en tu repositorio:
 
@@ -327,7 +327,7 @@ Abre un PR y OpsGuard bloqueará automáticamente cualquier cambio que contenga 
 
 | Input | Descripción | Por defecto |
 |-------|-------------|-------------|
-| `openrouter-api-key` | API Key de OpenRouter (**obligatoria**) | — |
+| `openrouter-api-key` | API Key de OpenRouter (**obligatoria**) | - |
 | `risk-threshold` | Puntuación mínima para bloquear (0–10) | `7` |
 | `model` | Modelo LLM para Gate 2 | `google/gemini-2.0-flash-001` |
 | `telemetry-mode` | Verbosidad (`verbose` / `summary` / `silent`) | `verbose` |

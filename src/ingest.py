@@ -32,7 +32,7 @@ class GitManager:
             self.repo = Repo(repo_path)
         except InvalidGitRepositoryError as e:
             raise GitIngestError(f"Invalid git repository at '{repo_path}': {e}")
-        # Cache for CI SHAs — _get_ci_shas() is called by both get_staged_files()
+        # Cache for CI SHAs - _get_ci_shas() is called by both get_staged_files()
         # and _get_ci_diff(), so we parse the GitHub event JSON only once per run.
         self._shas_cache: Optional[Tuple[str, str]] = None
 
@@ -66,7 +66,7 @@ class GitManager:
         pull_request = event_data.get("pull_request")
 
         if not pull_request:
-            # No PR object — check if this is an event we should skip
+            # No PR object - check if this is an event we should skip
             # (merges to main, branch deletions, direct pushes)
             if "pusher" in event_data or "deleted" in event_data:
                 raise SkipScanSignal(

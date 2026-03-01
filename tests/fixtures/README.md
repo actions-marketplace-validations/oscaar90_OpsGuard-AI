@@ -1,11 +1,11 @@
-# OpsGuard-AI — Shooting Range
+# OpsGuard-AI - Shooting Range
 
 > Colección de archivos intencionalmente vulnerables para demostrar las capacidades de detección de OpsGuard-AI.
 
 Estos ficheros están excluidos del análisis automático de OpsGuard (ver `.opsguardignore`) porque contienen vulnerabilidades **a propósito**. Su función es doble:
 
-1. **Demostración en vivo** — el profesor puede copiar cualquier fichero a otra ruta, hacer commit y abrir una PR; OpsGuard bloqueará el pipeline.
-2. **Base de los tests unitarios** — `tests/test_security.py` los usa programáticamente para validar el motor de detección.
+1. **Demostración en vivo** - el profesor puede copiar cualquier fichero a otra ruta, hacer commit y abrir una PR; OpsGuard bloqueará el pipeline.
+2. **Base de los tests unitarios** - `tests/test_security.py` los usa programáticamente para validar el motor de detección.
 
 ---
 
@@ -23,7 +23,7 @@ Estos ficheros están excluidos del análisis automático de OpsGuard (ver `.ops
 
 ---
 
-## Demo Manual — Instrucciones para el Evaluador
+## Demo Manual - Instrucciones para el Evaluador
 
 Siga estos pasos para ver OpsGuard en acción bloqueando un commit vulnerable en tiempo real.
 
@@ -36,22 +36,22 @@ cp .env.example .env
 # Añadir OPENROUTER_API_KEY en .env
 ```
 
-### Paso 1 — Elija un fixture
+### Paso 1 - Elija un fixture
 
 | Si quiere ver… | Use este fichero |
 |----------------|-----------------|
 | Bloqueo inmediato por regex (Gate 1) | `aws_creds.env` |
-| Bloqueo por IA — SQL Injection (Gate 2) | `legacy_login.py` |
-| Bloqueo por IA — Backdoor (Gate 2) | `auth_middleware.py` |
+| Bloqueo por IA - SQL Injection (Gate 2) | `legacy_login.py` |
+| Bloqueo por IA - Backdoor (Gate 2) | `auth_middleware.py` |
 
-### Paso 2 — Copie el fichero a una ruta analizada
+### Paso 2 - Copie el fichero a una ruta analizada
 
 ```bash
 # Ejemplo con el fichero de credenciales AWS
 cp tests/fixtures/vulnerable_app/aws_creds.env src/aws_creds.env
 ```
 
-### Paso 3 — Añada y commitee el cambio
+### Paso 3 - Añada y commitee el cambio
 
 ```bash
 git checkout -b demo/shooting-range
@@ -60,12 +60,12 @@ git commit -m "test: add config file"
 git push origin demo/shooting-range
 ```
 
-### Paso 4 — Abra una Pull Request
+### Paso 4 - Abra una Pull Request
 
 Abra la PR desde GitHub. El workflow `opsguard.yml` se activará automáticamente y **bloqueará el merge** con una salida similar a:
 
 ```
-🛡️ OpsGuard-AI — Security Gate Active
+🛡️ OpsGuard-AI - Security Gate Active
 
 🚨 DETECTED 1 STATIC VIOLATIONS:
 ┌──────────────────┬──────┐
@@ -77,7 +77,7 @@ Abra la PR desde GitHub. El workflow `opsguard.yml` se activará automáticament
 ⛔ PIPELINE BLOCKED: SECURITY VIOLATION DETECTED
 ```
 
-### Paso 5 — Limpieza
+### Paso 5 - Limpieza
 
 ```bash
 git checkout main

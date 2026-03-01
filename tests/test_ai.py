@@ -2,7 +2,7 @@
 Unit tests for the AIEngine (src/ai.py).
 
 These tests validate Gate 2 (AI/LLM) of the Two-Gate System.
-All OpenRouter API calls are mocked — no real network access is made.
+All OpenRouter API calls are mocked - no real network access is made.
 
 Key behaviours validated:
   - AIEngine raises AIEngineError when OPENROUTER_API_KEY is missing.
@@ -183,7 +183,7 @@ class TestAnalyzeDiffFailClosed:
         self.engine = AIEngine()
 
     def test_api_timeout_returns_block(self):
-        """Network timeout must not propagate — fail-closed returns BLOCK risk=10."""
+        """Network timeout must not propagate - fail-closed returns BLOCK risk=10."""
         self.mock_client.chat.completions.create.side_effect = Exception(
             "Connection timeout"
         )
@@ -205,10 +205,10 @@ class TestAnalyzeDiffFailClosed:
         assert result["risk_score"] == 10
 
     def test_response_is_list_returns_block(self):
-        """A list response (instead of dict) is normalised — should still return a verdict."""
+        """A list response (instead of dict) is normalised - should still return a verdict."""
         # The code handles lists by taking the first element, so if the element has verdict
         # it won't be a fail-closed case, but an empty list will be.
-        # Per the spec: '[{"verdict": "APPROVE"}]' — should normalise and return APPROVE
+        # Per the spec: '[{"verdict": "APPROVE"}]' - should normalise and return APPROVE
         # but an empty list '[]' should return BLOCK due to missing 'verdict' key defaulting.
         list_payload = '[{"verdict": "APPROVE", "risk_score": 1, "explanation": "ok", "findings": []}]'
         self.mock_client.chat.completions.create.return_value = _make_mock_response(
@@ -218,7 +218,7 @@ class TestAnalyzeDiffFailClosed:
         result = self.engine.analyze_diff("+ x = 1")
 
         # The code normalises list to first element, so verdict is extracted correctly
-        # Per the prompt: "Verifica fail-closed" — meaning list normalisation keeps it safe
+        # Per the prompt: "Verifica fail-closed" - meaning list normalisation keeps it safe
         assert "verdict" in result
         assert "risk_score" in result
 

@@ -36,7 +36,7 @@ MAX_DIFF_CHARS = 30_000
 TELEMETRY_MODE = os.getenv("OPSGUARD_TELEMETRY_MODE", "verbose").lower()
 
 # SCHEMA ENFORCEMENT & CONTEXT INJECTION
-# Loaded from prompts/system_prompt.txt — edit the file to update prompt behaviour
+# Loaded from prompts/system_prompt.txt - edit the file to update prompt behaviour
 # without touching Python source code (versioned independently).
 _PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "system_prompt.txt"
 SYSTEM_PROMPT = _PROMPT_PATH.read_text(encoding="utf-8")
@@ -112,7 +112,7 @@ class AIEngine:
 
         start_time = time.time()
 
-        # Defensive truncation — keeps cost and context window predictable.
+        # Defensive truncation - keeps cost and context window predictable.
         original_len = len(diff_text)
         truncated_diff = diff_text[:MAX_DIFF_CHARS]
         if original_len > MAX_DIFF_CHARS and TELEMETRY_MODE != "silent":

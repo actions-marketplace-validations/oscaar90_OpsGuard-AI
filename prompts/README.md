@@ -9,7 +9,7 @@ Este directorio contiene dos tipos de artefactos de prompt engineering con prop�
 
 ---
 
-## 1. `system_prompt.txt` — El prompt de producción de Gate 2
+## 1. `system_prompt.txt` - El prompt de producción de Gate 2
 
 Este fichero es la "inteligencia" de Gate 2. Se carga en tiempo de importación desde `src/ai.py` y se envía como `system` message en cada llamada a la API del LLM (ADR-0002, ADR-0005).
 
@@ -51,7 +51,7 @@ La regla 2 (rutas de fichero ≠ PII) surgió del mismo proceso: `get_staged_fil
 }
 ```
 
-El schema JSON se incluye en el propio prompt — no se delega al parámetro `response_format` del SDK exclusivamente. Esta redundancia es intencional: diferentes modelos del ecosistema OpenRouter respetan el `response_format` con distinta fidelidad. El schema en el prompt actúa como fallback.
+El schema JSON se incluye en el propio prompt - no se delega al parámetro `response_format` del SDK exclusivamente. Esta redundancia es intencional: diferentes modelos del ecosistema OpenRouter respetan el `response_format` con distinta fidelidad. El schema en el prompt actúa como fallback.
 
 El campo `risk_score` (entero 0–10) permite gradación de riesgo en lugar de un veredicto binario. Esto habilita el threshold configurable (`OPSGUARD_RISK_THRESHOLD`, por defecto 7) sin cambiar el prompt.
 
@@ -75,7 +75,7 @@ El campo `risk_score` (entero 0–10) permite gradación de riesgo en lugar de u
 
 ---
 
-## 2. Prompts de desarrollo (01–06) — Flujo de Desarrollo con IA
+## 2. Prompts de desarrollo (01–06) - Flujo de Desarrollo con IA
 
 Estos ficheros documentan el proceso de construcción del proyecto usando IA como herramienta de ingeniería. Cada prompt es una especificación técnica estructurada que se proporcionó a un LLM para implementar un módulo del sistema.
 
@@ -85,12 +85,12 @@ Este artefacto materializa el módulo **"Flujo de Desarrollo con IA"** del plan 
 
 | Fichero | Rol asignado al LLM | Módulo construido |
 |---------|--------------------|--------------------|
-| `01_git_ingest_spec.md` | Senior Python DevOps Engineer | `src/ingest.py` — `GitManager` (lectura de diffs en local y CI) |
-| `02_create_adrs.md` | Principal Software Architect | `docs/adr/0001`, `0002`, `0003` — decisiones arquitectónicas iniciales |
-| `03_policy_engine_spec.md` | Senior Security Engineer | `src/security.py` — Gate 1 Regex engine + `opsguard.yml` |
+| `01_git_ingest_spec.md` | Senior Python DevOps Engineer | `src/ingest.py` - `GitManager` (lectura de diffs en local y CI) |
+| `02_create_adrs.md` | Principal Software Architect | `docs/adr/0001`, `0002`, `0003` - decisiones arquitectónicas iniciales |
+| `03_policy_engine_spec.md` | Senior Security Engineer | `src/security.py` - Gate 1 Regex engine + `opsguard.yml` |
 | `04_observability_adr_spec.md` | Principal Software Architect | Observabilidad y telemetría FinOps |
-| `05_ai_integration.md` | Principal AI Engineer | `src/ai.py` — Gate 2 AI engine (integración LLM) |
-| `06_web_dashboard.md` | Senior Frontend Engineer | `web/` — dashboard de monitorización (Next.js / Vercel) |
+| `05_ai_integration.md` | Principal AI Engineer | `src/ai.py` - Gate 2 AI engine (integración LLM) |
+| `06_web_dashboard.md` | Senior Frontend Engineer | `web/` - dashboard de monitorización (Next.js / Vercel) |
 
 ### Patrón de los prompts de desarrollo
 

@@ -104,7 +104,7 @@ efficiency_ratio = output_tokens / input_tokens
 
 ### Resultados por fixture
 
-#### Fixture 1 — `legacy_login.py` (SQL Injection)
+#### Fixture 1 - `legacy_login.py` (SQL Injection)
 
 | Modelo | Veredicto | Risk Score | Latencia | Input Tokens | Output Tokens | Coste/llamada |
 |--------|:---------:|:----------:|:--------:|:------------:|:-------------:|:-------------:|
@@ -112,7 +112,7 @@ efficiency_ratio = output_tokens / input_tokens
 | `anthropic/claude-haiku-4-5` | ✅ BLOCK | 10/10 | 1 923 ms | 1 142 | 312 | $0.002163 |
 | `openai/gpt-4o-mini` | ✅ BLOCK | 9/10 | 3 421 ms | 1 142 | 298 | $0.000351 |
 
-#### Fixture 2 — `auth_middleware.py` (Developer Backdoor)
+#### Fixture 2 - `auth_middleware.py` (Developer Backdoor)
 
 | Modelo | Veredicto | Risk Score | Latencia | Input Tokens | Output Tokens | Coste/llamada |
 |--------|:---------:|:----------:|:--------:|:------------:|:-------------:|:-------------:|
@@ -120,7 +120,7 @@ efficiency_ratio = output_tokens / input_tokens
 | `anthropic/claude-haiku-4-5` | ✅ BLOCK | 9/10 | 2 187 ms | 1 287 | 356 | $0.002452 |
 | `openai/gpt-4o-mini` | ✅ BLOCK | 8/10 | 3 891 ms | 1 287 | 334 | $0.000393 |
 
-#### Fixture 3 — `config.php` (Hardcoded Secrets)
+#### Fixture 3 - `config.php` (Hardcoded Secrets)
 
 | Modelo | Veredicto | Risk Score | Latencia | Input Tokens | Output Tokens | Coste/llamada |
 |--------|:---------:|:----------:|:--------:|:------------:|:-------------:|:-------------:|
@@ -128,7 +128,7 @@ efficiency_ratio = output_tokens / input_tokens
 | `anthropic/claude-haiku-4-5` | ✅ BLOCK | 10/10 | 1 654 ms | 987 | 278 | $0.001903 |
 | `openai/gpt-4o-mini` | ✅ BLOCK | 10/10 | 2 678 ms | 987 | 267 | $0.000309 |
 
-#### Fixture 4 — `supply_chain_attack.py` (Typosquatting `ghrc.io`)
+#### Fixture 4 - `supply_chain_attack.py` (Typosquatting `ghrc.io`)
 
 > Este fixture es el caso de prueba más exigente: el dominio es sintácticamente válido, no hay patrón léxico que lo detecte. Solo el razonamiento contextual lo identifica como amenaza.
 
@@ -154,7 +154,7 @@ efficiency_ratio = output_tokens / input_tokens
 
 ```mermaid
 xychart-beta
-    title "Coste mensual estimado — 1 000 PRs/mes (USD)"
+    title "Coste mensual estimado - 1 000 PRs/mes (USD)"
     x-axis ["Gemini Flash 2.0", "GPT-4o-mini", "Claude Haiku 4.5"]
     y-axis "USD / mes" 0 --> 2.5
     bar [0.24, 0.36, 2.28]
@@ -164,7 +164,7 @@ xychart-beta
 
 ```mermaid
 xychart-beta
-    title "Latencia media por análisis (ms) — menor es mejor"
+    title "Latencia media por análisis (ms) - menor es mejor"
     x-axis ["Gemini Flash 2.0", "GPT-4o-mini", "Claude Haiku 4.5"]
     y-axis "ms" 0 --> 4000
     bar [2848, 3528, 2026]

@@ -15,7 +15,7 @@ Key behaviours validated:
     allowing main.py to exit cleanly with code 0 instead of failing.
   - _get_ci_shas() fails clearly with actionable messages for every
     misconfiguration scenario (missing env var, bad JSON, missing SHAs…).
-  - SkipScanSignal is a subclass of GitIngestError — it can be caught
+  - SkipScanSignal is a subclass of GitIngestError - it can be caught
     by callers that only handle the base exception.
 """
 
@@ -48,7 +48,7 @@ class TestGitManagerInit:
     """GitManager must accept a valid repository and fail clearly on bad input."""
 
     def test_initializes_with_valid_repo(self):
-        """The project root is a valid git repository — init must succeed."""
+        """The project root is a valid git repository - init must succeed."""
         manager = GitManager(repo_path=".")
         assert manager.repo is not None
 
@@ -80,7 +80,7 @@ class TestCIDetection:
 
 
 # ---------------------------------------------------------------------------
-# GitHub event JSON parsing — _get_ci_shas()
+# GitHub event JSON parsing - _get_ci_shas()
 # ---------------------------------------------------------------------------
 
 
@@ -94,7 +94,7 @@ class TestCISHAParsing:
     # --- Configuration errors ---
 
     def test_raises_when_event_path_not_set(self, manager, monkeypatch):
-        """Missing GITHUB_EVENT_PATH is a CI misconfiguration — raise GitIngestError."""
+        """Missing GITHUB_EVENT_PATH is a CI misconfiguration - raise GitIngestError."""
         monkeypatch.delenv("GITHUB_EVENT_PATH", raising=False)
         with pytest.raises(GitIngestError, match="GITHUB_EVENT_PATH"):
             manager._get_ci_shas()
@@ -147,7 +147,7 @@ class TestCISHAParsing:
         self, manager, monkeypatch, tmp_path
     ):
         """An unknown event without 'pull_request', 'pusher', or 'deleted' is
-        an unrecognised payload — raise GitIngestError (not SkipScanSignal).
+        an unrecognised payload - raise GitIngestError (not SkipScanSignal).
         """
         payload = {"action": "some_unknown_action"}
         monkeypatch.setenv("GITHUB_EVENT_PATH", write_event(tmp_path, payload))
@@ -157,7 +157,7 @@ class TestCISHAParsing:
     def test_raises_when_pull_request_missing_base_sha(
         self, manager, monkeypatch, tmp_path
     ):
-        """PR event without base.sha / head.sha is malformed — raise GitIngestError."""
+        """PR event without base.sha / head.sha is malformed - raise GitIngestError."""
         payload = {"pull_request": {"title": "Incomplete PR payload"}}
         monkeypatch.setenv("GITHUB_EVENT_PATH", write_event(tmp_path, payload))
         with pytest.raises(GitIngestError, match="Missing base.sha or head.sha"):

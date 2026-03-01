@@ -64,7 +64,7 @@ class TestSecurityPolicyLoading:
 
 
 # ---------------------------------------------------------------------------
-# Gate 1 — secrets caught by regex (should BLOCK)
+# Gate 1 - secrets caught by regex (should BLOCK)
 # ---------------------------------------------------------------------------
 class TestGate1SecretDetection:
     """Gate 1 must block files that contain hardcoded secrets with known patterns."""
@@ -74,7 +74,7 @@ class TestGate1SecretDetection:
         self.policy = SecurityPolicy(config_path=str(CONFIG))
 
     def test_aws_access_key_triggers_violation(self):
-        """aws_creds.env — contains AKIA* key matched by the AWS Access Key pattern."""
+        """aws_creds.env - contains AKIA* key matched by the AWS Access Key pattern."""
         content = (FIXTURES / "aws_creds.env").read_text()
         violations = self.policy.scan_diff(make_diff(content))
 
@@ -92,7 +92,7 @@ class TestGate1SecretDetection:
 
 
 # ---------------------------------------------------------------------------
-# Gate 1 — semantic vulnerabilities NOT caught by regex (Gate 2 responsibility)
+# Gate 1 - semantic vulnerabilities NOT caught by regex (Gate 2 responsibility)
 # ---------------------------------------------------------------------------
 class TestGate1DoesNotOverreach:
     """Gate 1 must pass files whose vulnerabilities are semantic, not structural.
@@ -107,7 +107,7 @@ class TestGate1DoesNotOverreach:
         self.policy = SecurityPolicy(config_path=str(CONFIG))
 
     def test_sql_injection_passes_gate1(self):
-        """legacy_login.py — SQL injection is a logic flaw, not a secret.
+        """legacy_login.py - SQL injection is a logic flaw, not a secret.
 
         Gate 1 (regex) must PASS this file. Gate 2 (AI) is responsible for
         detecting the unsanitised f-string query.
@@ -121,7 +121,7 @@ class TestGate1DoesNotOverreach:
         )
 
     def test_logic_backdoor_passes_gate1(self):
-        """auth_middleware.py — developer backdoor is a semantic vulnerability.
+        """auth_middleware.py - developer backdoor is a semantic vulnerability.
 
         The X-DEBUG-MODE bypass cannot be detected by pattern matching alone.
         Gate 1 must let it through so Gate 2 (AI) can reason about the logic.
@@ -135,7 +135,7 @@ class TestGate1DoesNotOverreach:
         )
 
     def test_php_config_with_generic_password_passes_gate1(self):
-        """config.php — generic password in PHP array syntax is not caught by regex.
+        """config.php - generic password in PHP array syntax is not caught by regex.
 
         The PHP '=>' operator does not match the '=' / ':' assignment patterns
         in opsguard.yml. This is a known limitation of Gate 1; Gate 2 (AI)
@@ -149,7 +149,7 @@ class TestGate1DoesNotOverreach:
         ), f"PHP generic password should reach Gate 2 (AI). Got: {violations}"
 
     def test_supply_chain_typosquatting_passes_gate1(self):
-        """supply_chain_attack.py — typosquatting domain (ghrc.io vs ghcr.io).
+        """supply_chain_attack.py - typosquatting domain (ghrc.io vs ghcr.io).
 
         There is no deterministic regex pattern that can distinguish a legitimate
         domain from a typosquatted one. Gate 1 must pass this file; Gate 2 (AI)
@@ -175,7 +175,7 @@ class TestDiffBehavior:
         self.policy = SecurityPolicy(config_path=str(CONFIG))
 
     def test_deleted_lines_are_not_flagged(self):
-        """Secrets on lines starting with '-' are being REMOVED — not introduced.
+        """Secrets on lines starting with '-' are being REMOVED - not introduced.
 
         Removing a secret is a remediation action. Flagging it would block
         the very commits that fix security issues.

@@ -2,7 +2,7 @@
 End-to-end integration tests for the OpsGuard pipeline (src/main.py).
 
 These tests validate the full Two-Gate pipeline contract using Typer's CliRunner.
-Both GitManager and AIEngine are mocked — no git repository or API access is needed.
+Both GitManager and AIEngine are mocked - no git repository or API access is needed.
 
 Key behaviours validated:
   - Gate 1 blocks diffs containing AWS credentials (exit code 1).
