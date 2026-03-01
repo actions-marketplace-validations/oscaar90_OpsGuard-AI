@@ -17,6 +17,33 @@ OpsGuard es una herramienta de Ingeniería de Plataforma que actúa como **puert
 
 ---
 
+## 🔍 ¿Por qué OpsGuard? Comparativa con herramientas existentes
+
+El ecosistema de seguridad en pipelines ya cuenta con herramientas maduras. OpsGuard no pretende reemplazarlas, sino cubrir el nicho específico que ninguna de ellas cubre: **el análisis semántico de lógica compleja con privacidad garantizada**.
+
+| Capacidad | Gitleaks | Semgrep | Trivy | **OpsGuard** |
+|-----------|:--------:|:-------:|:-----:|:------------:|
+| Detección de secretos (Regex) | ✅ | ✅ | ❌ | ✅ Gate 1 |
+| Análisis semántico con IA | ❌ | ⚠️ Limitado | ❌ | ✅ Gate 2 |
+| Detección de SQL Injection lógica | ❌ | ⚠️ Patrones | ❌ | ✅ Contextual |
+| Detección de backdoors de lógica | ❌ | ❌ | ❌ | ✅ |
+| Detección de typosquatting de dominios | ❌ | ❌ | ❌ | ✅ |
+| Privacidad: secretos nunca salen del entorno | ✅ | ❌ SaaS | ✅ | ✅ ADR-0001 |
+| Integración nativa GitHub Actions | ✅ | ✅ | ✅ | ✅ |
+| Coste de inferencia | Gratuito | Gratuito/Pago | Gratuito | ~$0.001/PR |
+| Modelo de IA intercambiable | ❌ | ❌ | ❌ | ✅ Env var |
+
+### El nicho de OpsGuard: vulnerabilidades que el Regex no puede ver
+
+- **Gitleaks** es la mejor herramienta para detección de secretos por patrones. Gate 1 de OpsGuard cubre exactamente ese caso, pero Gate 2 añade la capa que Gitleaks no tiene: razonamiento contextual.
+- **Semgrep** detecta vulnerabilidades con reglas escritas por humanos. Es potente pero frágil ante variaciones de código no contempladas en las reglas. No tiene razonamiento semántico real.
+- **Trivy** escanea dependencias, imágenes de contenedor e IaC. Su dominio es distinto: vulnerabilidades conocidas (CVEs), no lógica de código nuevo.
+- **OpsGuard** es la única herramienta de este listado que puede detectar un ataque de typosquatting como `ghrc.io` vs `ghcr.io` — un dominio sintácticamente válido que ningún escáner estático identificaría como amenaza.
+
+> 💡 **Patrón de uso recomendado:** OpsGuard y Trivy son complementarios, no competidores. Trivy audita dependencias; OpsGuard audita la lógica del código nuevo que entra por PR.
+
+---
+
 ## 🛠️ Stack Tecnológico
 Este proyecto ha sido construido utilizando estándares modernos de Ingeniería de Software:
 
@@ -238,6 +265,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `0.7.0` | Competitive Positioning Sprint — comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |
 | `0.6.0` | Architecture Documentation Sprint — ADR-0004 fail-closed, contratos de módulo |
 | `0.5.0` | Code Quality Sprint — prompt externalizado, ADR-0005, auditoría CVE en CI |
 | `0.4.0` | Testing Coverage Sprint — tests AIEngine, E2E pipeline, gate cobertura 80% |
