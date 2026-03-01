@@ -100,6 +100,7 @@ jobs:
     needs: [lint, test]
     permissions:
       contents: read
+      issues: write   # Required: create GitHub Issue on security block
 
     steps:
       - name: Checkout Repository
@@ -132,3 +133,50 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPSGUARD_RISK_THRESHOLD: 7
         run: poetry run opsguard scan
+
+      - name: Create Security Alert Issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // Create label if it does not exist yet
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'security-block',
+                color: 'B60205',
+                description: 'Automatic security alert created by OpsGuard when a PR is blocked',
+              });
+            } catch (_) { /* label already exists */ }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 OpsGuard blocked PR #${pr.number}: ${pr.title}`,
+              labels: ['security-block'],
+              body: [
+                '## OpsGuard Security Alert',
+                '',
+                `OpsGuard detected a security threat and blocked **PR #${pr.number}** from being merged into \`${pr.base.ref}\`.`,
+                '',
+                '| Field | Value |',
+                '|-------|-------|',
+                `| **PR** | [#${pr.number} - ${pr.title}](${pr.html_url}) |`,
+                `| **Author** | @${pr.user.login} |`,
+                `| **Branch** | \`${pr.head.ref}\` → \`${pr.base.ref}\` |`,
+                `| **CI Run** | [View full security report](${runUrl}) |`,
+                `| **Timestamp** | ${new Date().toISOString()} |`,
+                '',
+                '### Next steps',
+                '1. Review the CI run logs linked above for the full OpsGuard security report.',
+                '2. Fix the detected issue in the branch `' + pr.head.ref + '`.',
+                '3. Push the fix — OpsGuard will re-scan automatically.',
+                '4. Close this issue once the PR is approved or discarded.',
+                '',
+                '> This issue was created automatically by OpsGuard. Do not merge the PR until this alert is resolved.',
+              ].join('\n'),
+            });
