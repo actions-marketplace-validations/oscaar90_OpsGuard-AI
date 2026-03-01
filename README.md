@@ -265,6 +265,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `0.9.0` | GitHub Action Marketplace Sprint — `action.yml`, release workflow, guía integración 5 min |
 | `0.8.0` | AI Model Benchmark Sprint — comparativa empírica Gemini Flash vs Haiku vs GPT-4o-mini |
 | `0.7.0` | Competitive Positioning Sprint — comparativa Semgrep/Gitleaks/Trivy, nicho diferencial |
 | `0.6.0` | Architecture Documentation Sprint — ADR-0004 fail-closed, contratos de módulo |
@@ -276,8 +277,64 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 ---
 
-## 🔧 Integración CI/CD
-Para producción, OpsGuard se ejecuta automáticamente en GitHub Actions.
+## 🚀 Integra OpsGuard en tu pipeline (5 minutos)
+
+OpsGuard está disponible como **GitHub Action** reutilizable. Cualquier equipo puede añadirlo a su pipeline sin clonar el repositorio ni gestionar dependencias:
+
+### Paso 1 — Añade el secreto
+
+En tu repositorio: **Settings → Secrets and variables → Actions → New repository secret**
+
+```
+Name:  OPENROUTER_API_KEY
+Value: <tu api key de openrouter.ai>
+```
+
+### Paso 2 — Crea el workflow
+
+Crea el fichero `.github/workflows/security.yml` en tu repositorio:
+
+```yaml
+name: OpsGuard Security Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  security-scan:
+    name: 🕵️ OpsGuard Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # Required: full history to compare PR base and head
+
+      - name: OpsGuard Security Scan
+        uses: oscaar90/OpsGuard-AI@v1
+        with:
+          openrouter-api-key: ${{ secrets.OPENROUTER_API_KEY }}
+```
+
+Abre un PR y OpsGuard bloqueará automáticamente cualquier cambio que contenga secretos, vulnerabilidades lógicas o ataques de supply-chain.
+
+### Configuración avanzada
+
+| Input | Descripción | Por defecto |
+|-------|-------------|-------------|
+| `openrouter-api-key` | API Key de OpenRouter (**obligatoria**) | — |
+| `risk-threshold` | Puntuación mínima para bloquear (0–10) | `7` |
+| `model` | Modelo LLM para Gate 2 | `google/gemini-2.0-flash-001` |
+| `telemetry-mode` | Verbosidad (`verbose` / `summary` / `silent`) | `verbose` |
+
+---
+
+## 🔧 Integración CI/CD (modo desarrollo)
+Para contribuir al proyecto o probarlo en local, OpsGuard incluye su propio pipeline de CI/CD.
 1. Workflow: `.github/workflows/opsguard.yml`.
 2. Secretos requeridos: `OPENROUTER_API_KEY`. (Facilitados al profesorado en el PDF)
 

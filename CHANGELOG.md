@@ -6,6 +6,26 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [0.9.0] — 2026-03-01 · GitHub Action Marketplace Sprint
+
+> Ciclo de mejora de originalidad e impacto iniciado tras el análisis de brechas del informe de evaluación TFM. Los criterios **Originalidad e Impacto Potencial** (9.0/10, gap −1.0) y **CI/CD y DevOps** (9.5/10, gap −0.5) señalaban la misma deuda: OpsGuard existía como proyecto interno pero no como producto reutilizable. Este sprint completa la última milla: publica OpsGuard como GitHub Action disponible en el Marketplace y añade el workflow de release automático que convierte cada tag semántico en un artefacto versionado.
+
+### Added
+
+- **[PR #54]** `action.yml` — Definición de GitHub Action compuesta y publicable en el Marketplace. Reemplaza el stub anterior (que referenciaba un Dockerfile inexistente) con una composite action completamente funcional. Expone cuatro inputs configurables (`openrouter-api-key`, `risk-threshold`, `model`, `telemetry-mode`), gestiona su propio entorno Python + Poetry en `${{ github.action_path }}` con `virtualenvs.in-project true`, e invoca `opsguard scan` desde el workspace del consumidor. Con este fichero cualquier equipo puede añadir OpsGuard a su pipeline con `uses: oscaar90/OpsGuard-AI@v1`.
+  - Fichero: `action.yml`
+  - Rama: `feat/github-action-marketplace` → `main`
+
+- **[PR #54]** `.github/workflows/release.yml` — Workflow de publicación automática de releases. Se activa en push de tags `v*.*.*` y crea una GitHub Release con notas auto-generadas a partir de los PRs mergeados desde el tag anterior. Establece el ciclo de vida de versiones semánticas que permite a los consumidores anclar a una versión estable (`@v1`, `@v0.9.0`) en lugar de depender de `@main`. Cubre la mejora de CI/CD que Brais señalaba: artefacto versionado y publicable.
+  - Fichero: `.github/workflows/release.yml`
+  - Rama: `feat/github-action-marketplace` → `main`
+
+- **[PR #54]** Sección "Integra OpsGuard en tu pipeline (5 minutos)" en `README.md` — Documentación de integración orientada al consumidor externo. Guía paso a paso (añadir secreto → crear workflow) con snippet YAML listo para copiar y pegar. Tabla de inputs configurables. Convierte el README de documentación interna del proyecto en documentación de producto open source.
+  - Fichero: `README.md`
+  - Rama: `feat/github-action-marketplace` → `main`
+
+---
+
 ## [0.8.0] — 2026-03-01 · AI Model Benchmark Sprint
 
 > Ciclo de mejora de integración de IA iniciado tras el análisis de brechas del informe de evaluación TFM. El criterio **Integración de Inteligencia Artificial** obtuvo un 9.5/10 (gap de −0.5 pts) porque ADR-0003 declaraba como objetivo una comparativa empírica entre modelos que nunca se materializó en datos reales. Este sprint cierra esa deuda: se ejecuta el benchmark sobre los 4 fixtures de Gate 2 y se documentan los resultados con métricas de detección, latencia y coste.
