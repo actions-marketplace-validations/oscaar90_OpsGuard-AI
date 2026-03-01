@@ -38,11 +38,6 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
   - Fichero: `pyproject.toml`, `poetry.lock`
   - Rama: `feat/testing-ai-engine-coverage` → `main`
 
-### Chore
-
-- **[PR #49]** Informe de plan de mejoras `docs/PLAN_MEJORA_TFM_BraisMoure.md` — documento complementario a la evaluación original (`docs/EVALUACION_TFM_BraisMoure.md`) que prioriza los 10 criterios por gap descendente e incluye acciones concretas, módulos del máster asociados y esfuerzo estimado por mejora. Generado como hoja de ruta para la evolución post-evaluación del proyecto.
-  - Fichero: `docs/PLAN_MEJORA_TFM_BraisMoure.md`
-
 ---
 
 ## [0.3.0] — 2026-02-21 · Quality Audit Sprint
