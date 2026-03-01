@@ -64,6 +64,7 @@ Para profundizar en las decisiones de arquitectura, costes y privacidad, consult
 - [ADR-001: Patrón Gatekeeper Local](/docs/adr/0001-patron-gatekeeper-local.md)
 - [ADR-002: Prompt Engineering & English Tokens](/docs/adr/0002-prompting-en-ingles.md)
 - [ADR-003: Telemetría y FinOps](/docs/adr/0003-telemetria-y-finops.md)
+- [ADR-004: Política Fail-Closed en Gate 2](/docs/adr/0004-fail-closed-policy.md)
 - [ADR-005: Estrategia de Truncado de Diff](/docs/adr/0005-diff-truncation-strategy.md)
 
 ---
@@ -237,6 +238,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `0.6.0` | Architecture Documentation Sprint — ADR-0004 fail-closed, contratos de módulo |
 | `0.5.0` | Code Quality Sprint — prompt externalizado, ADR-0005, auditoría CVE en CI |
 | `0.4.0` | Testing Coverage Sprint — tests AIEngine, E2E pipeline, gate cobertura 80% |
 | `0.3.0` | Quality Audit Sprint — corrección de blockers, tests unitarios, telemetría ADR-0003, principio de mínimo privilegio |

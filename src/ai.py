@@ -43,7 +43,23 @@ SYSTEM_PROMPT = _PROMPT_PATH.read_text(encoding="utf-8")
 
 
 class AIEngine:
-    def __init__(self):
+    """Gate 2: semantic security analysis engine powered by an LLM via OpenRouter.
+
+    Sends the git diff to a large language model for contextual reasoning about
+    security vulnerabilities that deterministic regex cannot detect (SQL injection,
+    logic backdoors, supply-chain typosquatting, etc.).
+
+    Error policy (ADR-0004): fail-closed. Any exception raised during analysis
+    returns a BLOCK verdict with risk_score=10 rather than propagating the error.
+    This guarantees that no PR passes silently through an engine failure.
+    """
+
+    def __init__(self) -> None:
+        """Initialise the AI engine and validate the OpenRouter API key.
+
+        Raises:
+            AIEngineError: If OPENROUTER_API_KEY is not set in the environment.
+        """
         raw_key = os.getenv("OPENROUTER_API_KEY")
         if not raw_key:
             raise AIEngineError("❌ Missing OPENROUTER_API_KEY")
@@ -65,6 +81,28 @@ class AIEngine:
         self.model = os.getenv("OPSGUARD_MODEL", "google/gemini-2.0-flash-001")
 
     def analyze_diff(self, diff_text: str) -> Dict[str, Any]:
+        """Analyse a git diff for security vulnerabilities using an LLM.
+
+        Truncates the diff to MAX_DIFF_CHARS before sending it to the model
+        to keep cost and latency predictable (ADR-0005).
+
+        Args:
+            diff_text: Raw git diff string to analyse.
+
+        Returns:
+            A dict with the following keys:
+                - ``verdict`` (str): ``"APPROVE"`` or ``"BLOCK"``.
+                - ``risk_score`` (int): 0–10. Values ≥ OPSGUARD_RISK_THRESHOLD
+                  (default 7) cause the pipeline to block.
+                - ``explanation`` (str): Executive summary of the security status.
+                - ``findings`` (list): Zero or more dicts, each with keys
+                  ``file``, ``line``, ``severity``, and ``issue``.
+
+        Note:
+            This method never raises. Any exception (network timeout, malformed
+            JSON, unexpected response type) is caught and returns a BLOCK verdict
+            with risk_score=10 (fail-closed policy, ADR-0004).
+        """
         if TELEMETRY_MODE != "silent":
             _console.print(
                 f"🤖 OpsGuard Brain: Sending diff to [cyan]{self.model}[/cyan]..."
