@@ -348,6 +348,18 @@ Para contribuir al proyecto o probarlo en local, OpsGuard incluye su propio pipe
 Puede consultar logs reales y capturas de funcionamiento en la carpeta de evidencias:
 👉 [Ver Logs y Capturas](/docs/evidence)
 
+#### 🔔 Issues de seguridad generados automáticamente (v1.0.2)
+
+Los siguientes Issues fueron creados de forma autónoma por OpsGuard al bloquear 5 PRs de demo, verificando el ciclo operacional completo:
+
+| Issue | Tipo de amenaza | Puerta |
+|-------|-----------------|--------|
+| [#60 - OpsGuard blocked PR #59](https://github.com/oscaar90/OpsGuard-AI/issues/60) | Credenciales AWS hardcodeadas | Gate 1 - Regex |
+| [#64 - OpsGuard blocked PR #61](https://github.com/oscaar90/OpsGuard-AI/issues/64) | SQL Injection via f-string | Gate 2 - LLM |
+| [#66 - OpsGuard blocked PR #62](https://github.com/oscaar90/OpsGuard-AI/issues/66) | Backdoor de desarrollador (`X-DEBUG-MODE`) | Gate 2 - LLM |
+| [#67 - OpsGuard blocked PR #63](https://github.com/oscaar90/OpsGuard-AI/issues/67) | Secrets hardcodeados en config PHP | Gate 2 - LLM |
+| [#68 - OpsGuard blocked PR #65](https://github.com/oscaar90/OpsGuard-AI/issues/68) | Typosquatting de cadena de suministro | Gate 2 - LLM |
+
 ---
 
 ⚖️ Licencia

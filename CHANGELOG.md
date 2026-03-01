@@ -16,7 +16,20 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
   - Fichero: `.github/workflows/opsguard.yml`
   - Rama: `feat/security-alert-issues` → `main` (PR #58)
   - Permiso añadido: `issues: write` al job `security-scan`
-  - Verificacion: 5 Issues auto-creados (PR #59, #61, #62, #63, #65 bloqueados)
+
+### Evidencia de verificacion — 5 Issues generados automaticamente
+
+La feature fue verificada abriendo 5 PRs de demo con fixtures vulnerables del Shooting Range. OpsGuard bloqueo cada PR y creo el Issue correspondiente de forma autonoma:
+
+| Issue | PR bloqueado | Tipo de amenaza | Puerta |
+|-------|-------------|-----------------|--------|
+| [#60 - OpsGuard blocked PR #59](https://github.com/oscaar90/OpsGuard-AI/issues/60) | [PR #59](https://github.com/oscaar90/OpsGuard-AI/pull/59) | Credenciales AWS hardcodeadas (`AWS_ACCESS_KEY_ID`) | Gate 1 - Regex |
+| [#64 - OpsGuard blocked PR #61](https://github.com/oscaar90/OpsGuard-AI/issues/64) | [PR #61](https://github.com/oscaar90/OpsGuard-AI/pull/61) | SQL Injection via f-string en query | Gate 2 - LLM |
+| [#66 - OpsGuard blocked PR #62](https://github.com/oscaar90/OpsGuard-AI/issues/66) | [PR #62](https://github.com/oscaar90/OpsGuard-AI/pull/62) | Backdoor de desarrollador (`X-DEBUG-MODE`) | Gate 2 - LLM |
+| [#67 - OpsGuard blocked PR #63](https://github.com/oscaar90/OpsGuard-AI/issues/67) | [PR #63](https://github.com/oscaar90/OpsGuard-AI/pull/63) | Secrets hardcodeados en config PHP | Gate 2 - LLM |
+| [#68 - OpsGuard blocked PR #65](https://github.com/oscaar90/OpsGuard-AI/issues/68) | [PR #65](https://github.com/oscaar90/OpsGuard-AI/pull/65) | Typosquatting de cadena de suministro (`ghrc.io`) | Gate 2 - LLM |
+
+Los 5 Issues quedan abiertos en el repositorio como evidencia permanente. Los PRs de demo fueron cerrados sin merge tras completar la verificacion.
 
 ---
 
