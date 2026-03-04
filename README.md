@@ -381,6 +381,6 @@ Este proyecto está publicado bajo la **[Elastic License 2.0 (ELv2)](LICENSE)**.
 - ❌ No puedes ofrecer OpsGuard como servicio gestionado o producto comercial sin autorización expresa del autor.
 - ❌ No puedes redistribuirlo con fines comerciales ni eliminando los avisos de licencia.
 
-Consulte el archivo [LICENSE](LICENSE) para los términos completos. Para acuerdos de licencia comercial: contacto@oscarsp.dev
+Consulte el archivo [LICENSE](LICENSE) para los términos completos. Para acuerdos de licencia comercial: oscar@oscarai.tech
 
 **TFM - Máster en Desarrollo con IA** | Óscar Sánchez Pérez
