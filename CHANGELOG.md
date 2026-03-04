@@ -6,6 +6,17 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.4] - 2026-03-04 · Public Release License Sprint
+
+> Cambio de licencia para habilitar la publicación en GitHub Marketplace y LinkedIn. El objetivo es proteger la autoría y el trabajo sin bloquear el uso legítimo de la herramienta en pipelines CI/CD reales.
+
+### Changed
+
+- **`LICENSE`** - Sustituida la licencia propietaria "all rights reserved" por la **Elastic License 2.0 (ELv2)**. La licencia anterior impedía cualquier uso de la herramienta, lo que era incompatible con la publicación en GitHub Marketplace y contradecía las instrucciones de integración del README. ELv2 permite el uso libre en pipelines CI/CD y la visualización del código fuente, pero prohíbe explícitamente ofrecer el software como servicio gestionado o producto comercial sin autorización. Es la licencia usada por HashiCorp (Terraform) y Elastic (Elasticsearch) para exactamente este caso de uso.
+- **`README.md`** - Sección de licencia actualizada: reemplazado el texto restrictivo propietario por un resumen en cuatro puntos (✅ permitido / ❌ prohibido) que comunica los términos de forma clara para usuarios técnicos. Añadido enlace de contacto para acuerdos comerciales.
+
+---
+
 ## [1.0.3] - 2026-03-04 · Benchmark Hardening Sprint
 
 > Revisión de integridad del benchmark de modelos antes de la publicación en GitHub Marketplace. Objetivo: que el informe sea defendible ante una revisión técnica externa sin inflación de resultados.
