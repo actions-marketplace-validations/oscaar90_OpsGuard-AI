@@ -269,6 +269,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `1.0.4` | Public Release License Sprint - cambio a Elastic License 2.0 para publicación en GitHub Marketplace |
 | `1.0.3` | Benchmark Hardening Sprint - revisión de integridad del informe: fixtures limpiados, sección de limitaciones, métricas con terminología ML precisa |
 | `1.0.2` | Operational Alerting Sprint - GitHub Issue automático con etiqueta `security-block` al bloquear un PR |
 | `1.0.1` | Polish & Hardening - graficas Mermaid en ADR-0003, normalizacion tipografica, `.gitignore` reforzado |
@@ -373,11 +374,13 @@ Los siguientes Issues fueron creados de forma autónoma por OpsGuard al bloquear
 
 ⚖️ Licencia
 
-Este proyecto es software propietario.
+Este proyecto está publicado bajo la **[Elastic License 2.0 (ELv2)](LICENSE)**.
 
-El código fuente se hace público únicamente con fines de evaluación académica y demostración técnica.
-No se concede permiso para usar, copiar, modificar, distribuir ni explotar este software sin autorización expresa y por escrito del autor.
+- ✅ Puedes usar OpsGuard en tu pipeline de CI/CD de forma gratuita.
+- ✅ Puedes ver, estudiar y modificar el código fuente.
+- ❌ No puedes ofrecer OpsGuard como servicio gestionado o producto comercial sin autorización expresa del autor.
+- ❌ No puedes redistribuirlo con fines comerciales ni eliminando los avisos de licencia.
 
-Consulte el archivo LICENSE para los términos completos.
+Consulte el archivo [LICENSE](LICENSE) para los términos completos. Para acuerdos de licencia comercial: contacto@oscarsp.dev
 
 **TFM - Máster en Desarrollo con IA** | Óscar Sánchez Pérez
