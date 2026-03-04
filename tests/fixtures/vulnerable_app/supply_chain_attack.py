@@ -8,7 +8,7 @@ import os
 
 # Container registry configuration
 REGISTRY = (
-    "ghrc.io"  # TYPOSQUATTING: This should be ghcr.io (GitHub Container Registry)
+    "ghrc.io"  # Should be ghcr.io (GitHub Container Registry)
 )
 ORG = "acme-corp"
 IMAGE_NAME = "payment-service"

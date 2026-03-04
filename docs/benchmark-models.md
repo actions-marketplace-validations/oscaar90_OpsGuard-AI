@@ -199,6 +199,8 @@ Todos los modelos recibieron el mismo system prompt (`prompts/system_prompt.txt`
 
 > Los tres modelos convergieron en `risk_score=10` de forma unánime. La justificación común: el diff expone simultáneamente dos tipos de secretos hardcodeados (`database.password` en plaintext y un API key de OpenAI en formato `sk-proj-*`) más `debug=true` activo. Cualquiera de los tres sería suficiente para bloquear; la combinación eleva la puntuación al máximo.
 
+> **Nota sobre el routing Gate 1 → Gate 2:** Los patrones de Gate 1 usan los operadores `[:=]` para detectar asignaciones de secretos (p.ej. `password = 'value'`, `api_key: 'value'`). La sintaxis PHP de array asociativo con fat arrow (`'password' => 'admin1234'`) no coincide con este patrón porque el `>` del operador `=>` interrumpe la secuencia esperada antes de la apertura de comillas. Esto es un punto ciego documentado del motor Regex; Gate 2 cubre exactamente este caso.
+
 ---
 
 ### Fixture B4 - `supply_chain_attack.py` (Typosquatting `ghrc.io`)
@@ -401,9 +403,9 @@ Caso de uso cotidiano: un PR que solo reorganiza código sin tocar ninguna super
 
 | Métrica | Gemini Flash 2.0 | Claude Haiku 4.5 | GPT-4o-mini |
 |---------|:----------------:|:----------------:|:-----------:|
-| Verdaderos positivos (4/4 BLOCK) | 4/4 ✅ | 4/4 ✅ | 4/4 ✅ |
-| Falsos positivos (0/3 APPROVE) | 0/3 ✅ | 0/3 ✅ | 0/3 ✅ |
-| Precisión total (7/7) | 7/7 ✅ | 7/7 ✅ | 7/7 ✅ |
+| True Positives: fixtures BLOCK detectados (4/4) | 4/4 ✅ | 4/4 ✅ | 4/4 ✅ |
+| False Positives: fixtures APPROVE bloqueados incorrectamente (0/3) | 0/3 ✅ | 0/3 ✅ | 0/3 ✅ |
+| Detección correcta sobre el conjunto de prueba (7/7 escenarios) | 7/7 ✅ | 7/7 ✅ | 7/7 ✅ |
 | Latencia media (ms) | **2 848** | **2 026** | **3 528** |
 | Coste medio por análisis (USD) | **$0.000242** | **$0.002279** | **$0.000364** |
 | Coste mensual estimado (1 000 PRs) | **$0.24** | **$2.28** | **$0.36** |
@@ -472,9 +474,31 @@ La latencia de Claude no justifica un coste 9.5× superior.
 
 ---
 
+## Limitaciones y alcance del benchmark
+
+Este benchmark es un **artefacto de verificación funcional**, no un estudio estadístico de rendimiento. Es importante comprender su alcance antes de interpretar los resultados.
+
+### Tamaño del conjunto de prueba
+
+El benchmark cubre 7 escenarios (4 BLOCK + 3 APPROVE). Este tamaño es suficiente para verificar que el motor detecta correctamente cada clase de vulnerabilidad semántica objetivo, pero no permite extrapolar tasas de detección a producción con garantías estadísticas. Los resultados deben leerse como "el sistema funciona correctamente en estas clases de amenaza", no como "el sistema tiene precisión del 100% sobre código arbitrario de producción".
+
+### Fixtures de referencia intencionalmente acotados
+
+Los fixtures del Shooting Range son **escenarios de referencia claros** que verifican cada clase de amenaza de forma aislada. En producción, las vulnerabilidades pueden aparecer más ofuscadas, mezcladas con lógica legítima o distribuidas en múltiples ficheros. El fixture B4 (typosquatting) es el más representativo de la dificultad real al requerir conocimiento externo del dominio de registro correcto sin ningún patrón léxico que lo delate.
+
+### Ausencia de casos adversariales
+
+El benchmark no incluye escenarios diseñados para evadir la detección: inyecciones SQL de segundo orden, ofuscación deliberada de strings, vulnerabilidades multi-fichero o patrones que sean ambiguos para el razonamiento semántico. La incorporación de este tipo de casos forma parte del roadmap de evaluación continua.
+
+### Varianza entre ejecuciones
+
+Con `temperature=0.1`, los resultados de detección (BLOCK/APPROVE) son estables entre ejecuciones. Los valores de latencia varían según la carga del proveedor (OpenRouter) y las condiciones de red; los valores reportados son la mediana de 3 ejecuciones independientes.
+
+---
+
 ## Reproducibilidad
 
-Cualquier evaluador puede reproducir este benchmark ejecutando OpsGuard en modo local contra los fixtures del Shooting Range:
+Cualquier evaluador puede reproducir este benchmark ejecutando OpsGuard en modo local contra los fixtures del Shooting Range. OpsGuard analiza el diff staged en el índice de Git, por lo que el procedimiento es añadir el fixture como cambio nuevo y ejecutar el scan:
 
 ```bash
 git clone https://github.com/oscaar90/OpsGuard-AI.git
@@ -483,11 +507,14 @@ poetry install
 export OPENROUTER_API_KEY=<tu_api_key>
 
 # Ejemplo: reproducir Fixture B1 con Gemini Flash
-git diff HEAD~1 -- tests/fixtures/vulnerable_app/legacy_login.py | \
-  OPSGUARD_MODEL=google/gemini-2.0-flash-001 \
+git checkout -b test/reproduce-b1
+git add tests/fixtures/vulnerable_app/legacy_login.py
+OPSGUARD_MODEL=google/gemini-2.0-flash-001 \
   OPSGUARD_TELEMETRY_MODE=verbose \
   poetry run opsguard scan
 ```
+
+> **Nota:** Los valores de latencia pueden diferir de los reportados según las condiciones de red y carga del proveedor. Los resultados de detección (BLOCK/APPROVE) son estables.
 
 Los fixtures del Shooting Range están documentados en [`tests/fixtures/README.md`](../tests/fixtures/README.md).
 
