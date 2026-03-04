@@ -207,9 +207,7 @@ Todos los modelos recibieron el mismo system prompt (`prompts/system_prompt.txt`
 
 **Diff enviado:**
 ```diff
-+REGISTRY = (
-+    "ghrc.io"  # Should be ghcr.io (GitHub Container Registry)
-+)
++REGISTRY = "ghrc.io"  # Should be ghcr.io (GitHub Container Registry)
 +
 +def build_and_push(tag: str = "latest"):
 +    full_image = f"{REGISTRY}/{ORG}/{IMAGE_NAME}:{tag}"
