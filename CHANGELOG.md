@@ -6,6 +6,25 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.3] - 2026-03-04 · Benchmark Hardening Sprint
+
+> Revisión de integridad del benchmark de modelos antes de la publicación en GitHub Marketplace. Objetivo: que el informe sea defendible ante una revisión técnica externa sin inflación de resultados.
+
+### Changed
+
+- **`docs/benchmark-models.md`** - Reformulación de la tabla de métricas: se sustituye "Precisión total (7/7)" por "Detección correcta sobre el conjunto de prueba (7/7 escenarios)" para evitar que la etiqueta implique una garantía estadística que un dataset de 7 muestras no puede otorgar. Las métricas de True/False Positives se renombran con sus términos ML precisos.
+- **`docs/benchmark-models.md`** - Corrección del comando de reproducibilidad: el comando anterior (`git diff HEAD~1 -- <fixture>`) dependía de que el fixture fuese el último cambio en la rama. El comando corregido usa `git add <fixture>` + `opsguard scan`, que es el flujo de ejecución real del motor.
+- **`tests/fixtures/vulnerable_app/legacy_login.py`** - Eliminado comentario de desarrollo en español que auto-etiquetaba la vulnerabilidad (`# SQL Injection clara para que la IA se luzca`). Los fixtures del Shooting Range deben representar código real, no código anotado para demostración.
+- **`tests/fixtures/vulnerable_app/auth_middleware.py`** - Simplificado el bloque de comentarios que identificaba explícitamente la vulnerabilidad ("VULNERABILITY: Developer Backdoor / This destroys the entire authentication scheme"). Reemplazado por un comentario realista de deuda técnica (`# TODO: remove debug bypass before deploy`), que es exactamente el tipo de comentario que aparecería en un PR real.
+- **`tests/fixtures/vulnerable_app/supply_chain_attack.py`** - Eliminado el prefijo `TYPOSQUATTING:` del comentario inline. Un desarrollador que introduce este typo accidentalmente no lo etiquetaría como typosquatting; esa identificación es precisamente la tarea del motor de IA.
+
+### Added
+
+- **`docs/benchmark-models.md`** - Nueva sección "Limitaciones y alcance del benchmark" que documenta explícitamente: (1) el tamaño del conjunto de prueba y qué conclusiones permite extraer, (2) la naturaleza de los fixtures como escenarios de referencia acotados, (3) la ausencia de casos adversariales y el roadmap para incorporarlos, (4) la varianza esperada en latencia entre ejecuciones.
+- **`docs/benchmark-models.md`** - Nota técnica sobre el routing Gate 1 → Gate 2 para el fixture B3 (`config.php`): el regex de Gate 1 usa operadores `[:=]` que no coinciden con la sintaxis PHP de fat arrow (`=>`), por lo que el fixture alcanza correctamente Gate 2. Documentado como punto ciego del motor Regex cubierto por diseño por Gate 2.
+
+---
+
 ## [1.0.2] - 2026-03-01 · Operational Alerting Sprint
 
 > Ciclo de mejora de CI/CD iniciado tras la segunda evaluacion TFM (9.85/10). El criterio **CI/CD y DevOps** obtuvo 9.5/10 con una observacion concreta: "El job de notificacion en caso de bloqueo (Slack, email, o un GitHub Issue automatico) que mencione en la primera revision sigue sin estar. En produccion un equipo necesita saber cuando OpsGuard bloquea algo, no solo verlo en los logs de CI." Este sprint cierra ese eslabón del ciclo operacional.

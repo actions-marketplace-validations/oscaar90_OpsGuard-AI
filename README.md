@@ -269,6 +269,7 @@ No es un simple historial de commits: cada entrada describe el **problema identi
 
 | Versión | Descripción |
 |---------|-------------|
+| `1.0.3` | Benchmark Hardening Sprint - revisión de integridad del informe: fixtures limpiados, sección de limitaciones, métricas con terminología ML precisa |
 | `1.0.2` | Operational Alerting Sprint - GitHub Issue automático con etiqueta `security-block` al bloquear un PR |
 | `1.0.1` | Polish & Hardening - graficas Mermaid en ADR-0003, normalizacion tipografica, `.gitignore` reforzado |
 | `1.0.0` | Prompt Engineering Documentation Sprint - `prompts/README.md`, evolución y decisiones de prompt |
