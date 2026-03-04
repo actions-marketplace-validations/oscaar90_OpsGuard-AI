@@ -1,8 +1,6 @@
 name: 'OpsGuard AI Security Gate'
 description: >
-  Context-aware security gate for DevOps pipelines. Blocks PRs containing
-  secrets, SQL injections, logic backdoors and supply-chain attacks using a
-  hybrid Regex + LLM two-gate engine.
+  Regex + LLM security gate for CI/CD pipelines. Blocks PRs with secrets, SQL injections, backdoors and supply-chain attacks.
 author: 'Óscar Sánchez Pérez'
 
 branding:
