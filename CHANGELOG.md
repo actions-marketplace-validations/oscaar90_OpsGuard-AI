@@ -6,6 +6,28 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.5] - 2026-03-06 · AI Agent Threat Vector Sprint
+
+> Documentacion y validacion de un nuevo vector de amenaza emergente: agentes de IA autonomos (Copilot Workspace, Cursor Agent, Devin, OpenClaw) con acceso de escritura al repositorio que introducen vulnerabilidades via commits autonomos. Este sprint cierra la brecha entre el modelo de amenaza original (desarrollador humano) y el modelo de amenaza actual (agente de IA con repo write access).
+
+### Added
+
+- **`tests/fixtures/vulnerable_app/ai_agent_commit.py`** - Nuevo fixture que simula un commit autonomo generado por un agente de IA al que se le pidio "anadir procesamiento de pagos". El fichero contiene las tres categorias de vulnerabilidad que un agente comprometido o con alucinaciones inseguras introduciria: (1) Stripe API Key hardcodeada (`sk_live_...`) que el agente "extrajo" del contexto del repositorio, (2) SQL Injection via f-string en dos funciones de base de datos, (3) auth bypass via header `X-INTERNAL-ADMIN` que el agente anhadio como "acceso interno para el equipo de ops". Verificado en vivo: Gate 1 bloquea la version con credenciales en <1ms sin llamar al LLM; Gate 2 bloquea la version sin credenciales con `risk_score: 9/10` identificando CRITICAL en lineas 13 y 29.
+
+- **README.md** - Nueva seccion "OpsGuard como Red de Seguridad ante Agentes de IA Autonomos" con:
+  - Tabla de categorias de riesgo especificas de AI agents (credenciales por alucinacion vs. logica insegura generada)
+  - Salida real de los dos bloqueos verificados en vivo (Gate 1 y Gate 2)
+  - Diagrama del flujo de defensa: AI Agent -> PR -> OpsGuard Gates -> merge
+  - Narrativa del caso de uso emergente como "revisor de seguridad que nunca duerme"
+
+- **`tests/fixtures/README.md`** - Inventory actualizado con el nuevo fixture `ai_agent_commit.py` y nota de diseno explicando su funcion como fixture de nueva generacion para el vector AI agent.
+
+### Context
+
+El modelo de amenaza original de OpsGuard asumia que el actor que abre un PR es un desarrollador humano que comete un error o actua maliciosamente. En 2025-2026, los agentes de IA autonomos (con acceso `push` al repositorio via tokens de CI) son actores de primera clase en los pipelines. Un agente jailbroken, comprometido via prompt injection, o simplemente con alucinaciones inseguras puede introducir vulnerabilidades que: (1) pasan revision de codigo automatica porque el codigo "funciona", (2) no son detectadas por Gitleaks/Semgrep si no tienen patron estructural, (3) llegarian a `main` sin OpsGuard actuando como ultima linea de defensa en el gate del PR.
+
+---
+
 ## [1.0.4] - 2026-03-04 · Public Release License Sprint
 
 > Cambio de licencia para habilitar la publicación en GitHub Marketplace y LinkedIn. El objetivo es proteger la autoría y el trabajo sin bloquear el uso legítimo de la herramienta en pipelines CI/CD reales.

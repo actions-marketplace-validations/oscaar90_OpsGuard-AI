@@ -248,6 +248,81 @@ Hemos incluido un fixture de prueba (`tests/fixtures/vulnerable_app/supply_chain
 
 ---
 
+## 🤖 Caso Real: OpsGuard como Red de Seguridad ante Agentes de IA Autónomos
+
+### El nuevo vector de ataque: AI-generated code en el pipeline
+
+Los agentes de IA autónomos (GitHub Copilot Workspace, Cursor Agent, Devin, OpenClaw...) han cambiado el modelo de amenaza en los pipelines de CI/CD. Ya no solo los desarrolladores humanos abren Pull Requests: **los agentes de IA con acceso de escritura al repositorio pueden crear ramas, modificar ficheros y abrir PRs de forma autónoma**.
+
+Esto introduce dos categorías de riesgo que no existían antes:
+
+| Riesgo | Descripción | Ejemplo |
+|--------|-------------|---------|
+| **Credenciales por alucinación** | El agente genera código con credenciales hardcodeadas que "inventó" o extrajo del contexto del repositorio | API key de Stripe en un servicio de pagos |
+| **Lógica insegura generada** | El agente produce patrones inseguros (SQL injection, auth bypass) sin comprender las implicaciones de seguridad | f-string en query SQL, master bypass token |
+
+Un agente comprometido, jailbroken o simplemente con alucinaciones inseguras puede introducir vulnerabilidades que **ningún revisor humano aprobaría** - pero que podrían colarse si el pipeline no tiene una puerta de seguridad.
+
+### Prueba de Detección - Agente autónomo que modifica `src/payment_service.py`
+
+Hemos verificado que OpsGuard bloquea ambas categorías en vivo. El fixture [`tests/fixtures/vulnerable_app/ai_agent_commit.py`](tests/fixtures/vulnerable_app/ai_agent_commit.py) simula el commit de un agente que añade un servicio de pagos con múltiples vulnerabilidades.
+
+#### Gate 1 - Bloqueo de credenciales hardcodeadas (0ms, sin LLM)
+
+El agente hardcodeó una Stripe API Key real y un master bypass token. Gate 1 los detecta sin llamar a ninguna API externa:
+
+```
+🚨 DETECTED 2 STATIC VIOLATIONS:
+┌──────────────────────────────────────────────────────────────┬──────┐
+│ Type                                                         │ File │
+├──────────────────────────────────────────────────────────────┼──────┤
+│ [Generic Secret] Found pattern: SECRET                       │ Diff │
+│ [Stripe API Key] Found pattern: sk_live_4eC39HqLyjWDarjtT1z │ Diff │
+└──────────────────────────────────────────────────────────────┴──────┘
+⛔ PIPELINE BLOCKED: SECURITY VIOLATION DETECTED
+```
+
+> **Privacidad garantizada (ADR-0001):** la Stripe key nunca sale del entorno local. Gate 1 bloquea antes de que Gate 2 envíe nada a OpenRouter.
+
+#### Gate 2 - Bloqueo de lógica insegura generada (sin credenciales visibles)
+
+Cuando el agente no incluye secretos estructurales pero sí genera código con SQL injection y auth bypass, Gate 1 no detecta nada. Gate 2 analiza el contexto semántico y bloquea con `risk_score: 9/10`:
+
+```
+✅ No static credential patterns found.
+🤖 OpsGuard Brain: Sending diff to google/gemini-2.0-flash-001...
+
+⛔ Verdict: BLOCK | Risk Score: 9/10
+
+CRITICAL │ src/payment_service.py │ L13 │ SQL injection in get_user_balance - username interpolated directly
+CRITICAL │ src/payment_service.py │ L29 │ SQL injection in update_user_balance - unsanitized f-string
+MEDIUM   │ src/payment_service.py │ L21 │ Auth bypass via X-INTERNAL-ADMIN header
+
+⛔ PIPELINE BLOCKED: SECURITY VIOLATION DETECTED
+```
+
+### Por qué OpsGuard es la última línea de defensa ante AI agents
+
+```
+AI Agent (Copilot/Cursor/Devin)
+        │
+        ▼
+  git push → PR abierto
+        │
+        ▼
+  ┌─────────────────────────────────┐
+  │  OpsGuard Gate 1 (Regex)        │  ← Bloquea credenciales en <1ms
+  │  OpsGuard Gate 2 (LLM semántico)│  ← Bloquea lógica insegura en ~4s
+  └─────────────────────────────────┘
+        │
+        ▼  Solo si ambos gates pasan
+  merge a main
+```
+
+> **El caso de uso emergente:** A medida que los agentes de IA ganan autonomía en los pipelines, OpsGuard se convierte en el equivalente a un revisor de seguridad humano que nunca duerme, no se distrae y no puede ser presionado para aprobar un PR con vulnerabilidades.
+
+---
+
 ## 🤝 Estándares de Desarrollo (Conventional Commits)
 Este proyecto sigue estrictamente la especificación **[Conventional Commits](https://www.conventionalcommits.org/)**.
 
