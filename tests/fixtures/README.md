@@ -18,8 +18,11 @@ Estos ficheros están excluidos del análisis automático de OpsGuard (ver `.ops
 | `vulnerable_app/auth_middleware.py` | Backdoor de developer (`X-DEBUG-MODE`) | IA semántica | **Gate 2** |
 | `vulnerable_app/config.php` | Password y API Key hardcodeadas (PHP) | IA semántica | **Gate 2** |
 | `vulnerable_app/supply_chain_attack.py` | Supply-Chain Typosquatting (`ghrc.io` → `ghcr.io`) | IA semántica | **Gate 2** |
+| `vulnerable_app/ai_agent_commit.py` | Agente de IA autonomo: credenciales + SQL Injection + auth bypass | Ambos gates | **Gate 1 + Gate 2** |
 
 > **Nota de diseño:** `legacy_login.py`, `auth_middleware.py` y `config.php` pasan deliberadamente el Gate 1 (regex). Esto valida que el sistema no produce falsos positivos en vulnerabilidades semánticas y que el Gate 2 (IA) es el responsable de razonar sobre lógica de negocio y contexto.
+>
+> **`ai_agent_commit.py`** es el fixture de nueva generacion: simula un agente de IA autonomo (Copilot Workspace, Cursor Agent, Devin) que introduce multiples vulnerabilidades en un mismo commit. Demuestra que OpsGuard actua como red de seguridad ante AI-generated code comprometido o con alucinaciones inseguras.
 
 ---
 

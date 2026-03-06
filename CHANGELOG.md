@@ -6,6 +6,24 @@ Cada entrada está vinculada a su Pull Request en GitHub para trazabilidad compl
 
 ---
 
+## [1.0.5] - 2026-03-06 · AI Agent Threat Vector Sprint
+
+> Documentacion y validacion de un nuevo vector de amenaza emergente: agentes de IA autonomos (Copilot Workspace, Cursor Agent, Devin, OpenClaw) con acceso de escritura al repositorio. Este sprint cierra la brecha entre el modelo de amenaza original (desarrollador humano) y el modelo de amenaza actual (agente de IA con repo write access y capacidad de abrir PRs de forma autonoma).
+
+### Added
+
+- **`tests/fixtures/vulnerable_app/ai_agent_commit.py`** - Nuevo fixture del Shooting Range que representa el patron de codigo inseguro generado por un agente de IA autonomo al que se le pidio anadir un servicio de pagos. El fixture cubre el escenario Gate 2 (sin secretos estructurales, vulnerabilidades de logica de negocio). Verificado en vivo con `opsguard scan`: Gate 1 pasa limpio, Gate 2 bloquea con `risk_score: 9/10` y findings CRITICAL. El escenario Gate 1 (credenciales hardcodeadas) se demuestra con el fixture `aws_creds.env` ya existente.
+
+- **README.md** - Nueva seccion "OpsGuard como Red de Seguridad ante Agentes de IA Autonomos" con tabla de categorias de riesgo especificas de AI agents, salidas reales de los bloqueos verificados en vivo, diagrama de flujo de defensa y narrativa del caso de uso emergente.
+
+- **`tests/fixtures/README.md`** - Inventory actualizado con el nuevo fixture `ai_agent_commit.py` y nota de diseno sobre su funcion como fixture de nueva generacion para el vector AI agent.
+
+### Context
+
+El modelo de amenaza original de OpsGuard asumia que el actor que abre un PR es un desarrollador humano. En 2025-2026, los agentes de IA autonomos con acceso `push` al repositorio son actores de primera clase en los pipelines de CI/CD. OpsGuard actua como ultima linea de defensa ante este nuevo vector: analiza el diff del PR independientemente de si lo abrio un humano o un agente automatizado.
+
+---
+
 ## [1.0.4] - 2026-03-04 · Public Release License Sprint
 
 > Cambio de licencia para habilitar la publicación en GitHub Marketplace y LinkedIn. El objetivo es proteger la autoría y el trabajo sin bloquear el uso legítimo de la herramienta en pipelines CI/CD reales.
