@@ -269,20 +269,19 @@ Hemos verificado que OpsGuard bloquea ambas categorías en vivo. El fixture [`te
 
 #### Gate 1 - Bloqueo de credenciales hardcodeadas (0ms, sin LLM)
 
-El agente hardcodeó una Stripe API Key real y un master bypass token. Gate 1 los detecta sin llamar a ninguna API externa:
+Cuando el agente hardcodea credenciales (Stripe API Key, AWS Access Key, etc.), Gate 1 las detecta por patron estructural sin llamar a ninguna API externa. Salida real verificada con el fixture `aws_creds.env`:
 
 ```
-🚨 DETECTED 2 STATIC VIOLATIONS:
+🚨 DETECTED 1 STATIC VIOLATIONS:
 ┌──────────────────────────────────────────────────────────────┬──────┐
 │ Type                                                         │ File │
 ├──────────────────────────────────────────────────────────────┼──────┤
-│ [Generic Secret] Found pattern: SECRET                       │ Diff │
-│ [Stripe API Key] Found pattern: sk_live_4eC39HqLyjWDarjtT1z │ Diff │
+│ [AWS Access Key] Found pattern: AKIAIOSFODNN7EXAMPLE         │ Diff │
 └──────────────────────────────────────────────────────────────┴──────┘
 ⛔ PIPELINE BLOCKED: SECURITY VIOLATION DETECTED
 ```
 
-> **Privacidad garantizada (ADR-0001):** la Stripe key nunca sale del entorno local. Gate 1 bloquea antes de que Gate 2 envíe nada a OpenRouter.
+> **Privacidad garantizada (ADR-0001):** la credencial nunca sale del entorno local. Gate 1 bloquea antes de que Gate 2 envie nada a OpenRouter.
 
 #### Gate 2 - Bloqueo de lógica insegura generada (sin credenciales visibles)
 
