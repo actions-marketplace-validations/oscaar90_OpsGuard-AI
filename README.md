@@ -87,4 +87,12 @@ Si quieres meterte en las tripas técnicas del proyecto, aquí tienes todo el de
 - 📜 **[Registro de Cambios (Changelog)](./CHANGELOG.md)**
 
 ---
-*OpsGuard AI está publicado bajo la [Elastic License 2.0 (ELv2)](LICENSE).*
+
+## ⚖️ Licencia y Uso Comercial (Dual Licensing)
+
+OpsGuard AI utiliza un modelo de **Licencia Dual**:
+
+1. **Open Source (AGPLv3)**: Puedes usar, modificar y distribuir OpsGuard de forma gratuita bajo los términos de la [GNU Affero General Public License v3.0 (AGPLv3)](LICENSE). Ideal para proyectos personales, código abierto o pruebas no productivas. *(Nota: El uso de código bajo licencia AGPL en entornos corporativos suele requerir abrir el código fuente de los sistemas vinculados).*
+2. **Licencia Comercial**: Si deseas utilizar OpsGuard en una empresa, integrarlo en flujos de trabajo corporativos cerrados o evitar las restricciones de la licencia AGPL (copyleft) en tu infraestructura privativa, **es necesario adquirir una Licencia Comercial**.
+
+📧 Para obtener permisos comerciales o resolver dudas sobre licencias, contacta en: **oscar@oscarai.tech**
