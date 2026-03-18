@@ -8,15 +8,15 @@
 
 ---
 
-## 🤔 ¿De qué va esto? (Explicado para todos)
+## El problema que resuelve OpsGuard
 
 Imagina que tienes un restaurante y cada día llegan nuevos ingredientes. Antes de meterlos en la cocina, alguien tiene que revisarlos para asegurarse de que no hay nada en mal estado. 
 
-En el mundo del software pasa lo mismo. Los programadores escriben código nuevo todos los días. A veces, por error o por prisa, dejan "puertas abiertas" para los hackers (como contraseñas olvidadas, o fallos de seguridad graves).
+En el mundo del software pasa lo mismo. Los equipos escriben código nuevo todos los días y, por error o por prisa, a veces dejan brechas de seguridad abiertas (como credenciales olvidadas o fallos lógicos graves) que pueden ser explotadas por actores maliciosos.
 
-**OpsGuard es ese revisor en la puerta de tu cocina.** Analiza cada cambio en el código automáticamente y, si detecta algo peligroso, bloquea la entrada antes de que llegue a producción y afecte a tus clientes.
+**OpsGuard es el revisor en la puerta de tu infraestructura.** Analiza cada cambio en el código automáticamente y, si detecta un riesgo, bloquea la entrada antes de que llegue a producción y afecte a tus usuarios.
 
-## ✈️ ¿Cómo funciona? (El control del aeropuerto)
+## ¿Cómo funciona? (El control del aeropuerto)
 
 OpsGuard revisa tu código simulando el control de seguridad de un aeropuerto, en dos fases:
 
@@ -25,18 +25,18 @@ OpsGuard revisa tu código simulando el control de seguridad de un aeropuerto, e
 
 **Si en cualquiera de las dos puertas se detecta un problema, el código no pasa.**
 
-## 💡 ¿Por qué OpsGuard?
+## ¿Por qué OpsGuard?
 
 A diferencia de otras herramientas clásicas que solo buscan palabras exactas en un diccionario, OpsGuard **entiende** lo que hace el código.
 
-- 🔒 **Tus secretos están a salvo:** Las contraseñas se detectan en local, nunca viajan a ninguna IA.
-- 💸 **Casi gratis:** Cuesta menos de un céntimo ($0.001) por cada revisión de código.
-- 🤖 **Vigila a las otras IAs:** Detecta cuando herramientas como GitHub Copilot generan código inseguro.
-- 🔔 **Avisa al instante:** Si bloquea algo, crea un aviso detallado en GitHub automáticamente explicando cómo arreglarlo.
+- 🔒 **Privacidad local:** Las credenciales se detectan en tu propio entorno mediante análisis estático y nunca viajan a ninguna IA externa.
+- 💸 **Coste-eficiente:** El análisis semántico tiene un coste marginal de aproximadamente $0.001 por cada revisión.
+- 🤖 **Auditor de IA:** Detecta automáticamente vulnerabilidades introducidas por herramientas de autocompletado de código como Copilot o Cursor.
+- 🔔 **Alertas integradas:** Al bloquear una amenaza, genera un informe detallado directamente como un Issue en GitHub con los pasos para su resolución.
 
 📊 **[Ver comparativa con otras herramientas y métricas de rendimiento](./docs/benchmark-models.md)**
 
-## 🕵️ Ejemplos de lo que detecta
+## Ejemplos de lo que detecta
 - Contraseñas, Tokens, claves de APIs (AWS, Stripe, GitHub, etc.) o credenciales olvidadas en el código.
 - Ataques de inyección (ej. SQL Injections).
 - Puertas traseras ("Backdoors") dejadas activas para hacer pruebas.
@@ -44,7 +44,7 @@ A diferencia de otras herramientas clásicas que solo buscan palabras exactas en
 
 🔍 **[Ver casos reales de código bloqueado por OpsGuard](./docs/ejemplos-reales.md)**
 
-## 🚀 Ponlo a trabajar en 2 minutos
+## Ponlo a trabajar en 2 minutos
 
 OpsGuard se instala directamente en tu repositorio de GitHub. No tienes que mantener servidores ni instalar nada raro.
 
@@ -77,18 +77,18 @@ jobs:
 
 ---
 
-## 📚 Documentación para Ingenieros
+## Documentación para Ingenieros
 
 Si quieres meterte en las tripas técnicas del proyecto, aquí tienes todo el detalle:
 
-- 💻 **[Guía de instalación y pruebas en local](./docs/guia-local.md)**
-- 🏗️ **[Decisiones de Arquitectura (ADRs)](./docs/adr/)**
-- 🤖 **[Estrategia de Inteligencia Artificial (Prompts)](./prompts/)**
-- 📜 **[Registro de Cambios (Changelog)](./CHANGELOG.md)**
+- **[Guía de instalación y pruebas en local](./docs/guia-local.md)**
+- **[Decisiones de Arquitectura (ADRs)](./docs/adr/)**
+- **[Estrategia de Inteligencia Artificial (Prompts)](./prompts/)**
+- **[Registro de Cambios (Changelog)](./CHANGELOG.md)**
 
 ---
 
-## ⚖️ Licencia y Uso Comercial (Dual Licensing)
+## Licencia y Uso Comercial (Dual Licensing)
 
 OpsGuard AI utiliza un modelo de **Licencia Dual**:
 
