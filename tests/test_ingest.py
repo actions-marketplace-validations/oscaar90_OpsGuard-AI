@@ -26,7 +26,6 @@ from pathlib import Path
 
 from src.ingest import GitManager, GitIngestError, SkipScanSignal
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

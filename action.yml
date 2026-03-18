@@ -15,6 +15,10 @@ inputs:
     description: 'Minimum risk score (0–10) to block the pipeline. Default: 7.'
     required: false
     default: '7'
+  base-url:
+    description: 'Base URL of the LLM API endpoint. Default: https://openrouter.ai/api/v1'
+    required: false
+    default: 'https://openrouter.ai/api/v1'
   model:
     description: 'LLM model identifier (via OpenRouter) for Gate 2 analysis.'
     required: false
@@ -45,6 +49,7 @@ runs:
       shell: bash
       env:
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        OPSGUARD_BASE_URL: ${{ inputs.base-url }}
         OPSGUARD_RISK_THRESHOLD: ${{ inputs.risk-threshold }}
         OPSGUARD_MODEL: ${{ inputs.model }}
         OPSGUARD_TELEMETRY_MODE: ${{ inputs.telemetry-mode }}

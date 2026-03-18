@@ -71,14 +71,15 @@ class AIEngine:
             "X-Title": "OpsGuard-TFM",
         }
 
+        self.base_url = os.getenv("OPSGUARD_BASE_URL", "https://openrouter.ai/api/v1")
+        self.model = os.getenv("OPSGUARD_MODEL", "google/gemini-2.0-flash-001")
+
         self.client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=self.base_url,
             api_key=self.api_key,
             default_headers=extra_headers,
             timeout=60.0,
         )
-
-        self.model = os.getenv("OPSGUARD_MODEL", "google/gemini-2.0-flash-001")
 
     def analyze_diff(self, diff_text: str) -> Dict[str, Any]:
         """Analyse a git diff for security vulnerabilities using an LLM.

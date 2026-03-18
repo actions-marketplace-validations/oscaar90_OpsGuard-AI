@@ -18,7 +18,6 @@ from unittest.mock import MagicMock
 
 from src.ai import AIEngine, AIEngineError, MAX_DIFF_CHARS
 
-
 # ---------------------------------------------------------------------------
 # Shared fixtures
 # ---------------------------------------------------------------------------
