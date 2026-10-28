@@ -24,3 +24,7 @@ docs/*Oscar*.md
 docs/repo-improvements-internal.md
 PLAN_V5_PROYECTOS.md
 *.pdf
+
+# Config local de agentes
+.claude/settings.local.json
+.codex
